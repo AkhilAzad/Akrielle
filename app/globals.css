@@ -1,0 +1,266 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Lumora design tokens as CSS custom properties.
+   Tailwind covers most colour usage, but the loader, liquid-reveal canvas
+   and a few raw-CSS effects read these directly.
+   ========================================================================== */
+:root {
+  color-scheme: light;
+
+  --background: #ffffff;
+  --foreground: #111111;
+  --ink: #0a0a0a;
+  --muted: #8d8d8d;
+  --subtle: #b6b6b6;
+  --line: #e6e5e2;
+  --surface: #f1f0ee;
+  --surface-2: #e3e2df;
+  --accent: #b15f2c;
+  --accent-from: #cf8047;
+  --accent-to: #97501f;
+  --hero-from: #ecebe9;
+  --hero-to: #c9c9c9;
+
+  --radius-pill: 9999px;
+  --radius-card: 2rem;
+  --radius-card-sm: 1.25rem;
+  --radius-control: 0.875rem;
+
+  --ease-signature: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-reveal: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --shell: 88rem;
+}
+
+/* ==========================================================================
+   Adaptive root font-size — Lumora's signature responsive system.
+   Every rem-based size (which is nearly everything, incl. Tailwind spacing)
+   scales with the viewport. The JS in <AdaptiveGrid> handles widths > 1920px.
+   ========================================================================== */
+@media (max-width: 1920px) {
+  html { font-size: 0.833333vw; }
+}
+@media (max-width: 1440px) {
+  html { font-size: 1.111111vw; }
+}
+@media (max-width: 1024px) {
+  html { font-size: 1.5625vw; }
+}
+@media (max-width: 640px) {
+  html { font-size: 4.444444vw; }
+}
+
+@layer base {
+  * {
+    @apply border-line;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-paper text-ink font-body antialiased;
+    font-feature-settings: "ss01" on, "cv01" on;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Lumora is all Onest — headings differ by weight and tight tracking,
+     not by family. */
+  h1, h2, h3, h4 {
+    @apply font-display text-ink;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img, picture, video, canvas {
+    display: block;
+    max-width: 100%;
+  }
+
+  /* Visible focus ring — never removed, only restyled to the accent. */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: #ffffff;
+  }
+}
+
+@layer components {
+  /* --- Shell (Lumora container) ------------------------------------------ */
+  .shell {
+    @apply mx-auto w-full max-w-shell px-5 sm:px-8;
+  }
+
+  /* --- Eyebrow (dot + label) --------------------------------------------- */
+  .eyebrow {
+    @apply inline-flex items-center gap-2.5 font-body text-[0.6875rem] font-medium uppercase tracking-widest2 text-ink-muted;
+  }
+  .eyebrow-dot {
+    @apply inline-block h-[0.4rem] w-[0.4rem] shrink-0 rounded-full bg-accent;
+  }
+  .eyebrow-on-dark {
+    @apply text-ivory-muted;
+  }
+
+  .hairline {
+    @apply h-px w-full bg-line;
+  }
+
+  /* --- Pill button helpers (for raw <a>/<button>; Button.tsx mirrors these) */
+  .pill-btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-pill font-medium leading-none transition-all duration-500 ease-signature;
+  }
+  .pill-dark {
+    @apply bg-charcoal text-ivory hover:bg-black;
+  }
+  .pill-light {
+    @apply bg-surface text-ink hover:bg-surface-2;
+  }
+  .pill-outline {
+    @apply border border-line bg-transparent text-ink hover:border-ink;
+  }
+  .pill-accent {
+    @apply bg-accent text-white hover:bg-accent-to;
+  }
+  .pill-badge {
+    @apply inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-transform duration-500 ease-signature;
+  }
+
+  /* --- Animated inline link (inner span nudges on hover) ------------------ */
+  .anim-link {
+    @apply relative inline-flex items-center gap-1.5 overflow-hidden;
+  }
+  .anim-link > span {
+    @apply inline-block transition-transform duration-500 ease-signature;
+  }
+  .anim-link:hover > span:first-child {
+    transform: translateX(0.2rem);
+  }
+
+  /* --- Tag chip (dark cards) --------------------------------------------- */
+  .tag-chip {
+    @apply inline-flex items-center gap-2 rounded-pill border border-white/15 px-3 py-1 text-[0.75rem] text-ivory-muted;
+  }
+
+  /* --- Giant wordmark watermark ------------------------------------------ */
+  .watermark {
+    @apply pointer-events-none select-none font-semibold uppercase leading-none;
+    letter-spacing: -0.04em;
+    color: rgba(10, 10, 10, 0.04);
+  }
+  .watermark-light {
+    color: rgba(255, 255, 255, 0.05);
+  }
+
+  .glass-panel {
+    @apply rounded-card-sm border border-line/80 bg-white/70 backdrop-blur-xl;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.8),
+      0 8px 32px -12px rgba(10, 10, 10, 0.12);
+  }
+}
+
+/* ==========================================================================
+   Reveal primitives — masked line reveals, per-word reveals, and simple
+   fade-up. Elements start hidden; <RevealObserver> adds `.in` on scroll,
+   and the loader dispatches an intro event to reveal `[data-intro]` groups.
+   ========================================================================== */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.9s ease, transform 0.9s var(--ease-reveal);
+}
+.reveal-up.in {
+  opacity: 1;
+  transform: none;
+}
+
+.line-wrap {
+  display: block;
+  overflow: hidden;
+}
+.line-inner {
+  display: block;
+  transform: translateY(105%);
+  transition: transform 0.9s var(--ease-reveal);
+}
+.line-wrap.in .line-inner,
+.in > .line-wrap .line-inner {
+  transform: none;
+}
+
+.word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: transform 0.8s var(--ease-reveal), opacity 0.8s ease;
+}
+.word.in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Never leave reveal elements stuck hidden when motion is disabled. */
+  .reveal-up, .word {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .line-inner {
+    transform: none !important;
+  }
+}
+
+/*
+ * Print rules for the Beauty Report (/report). Anything marked
+ * .no-print is dropped, the document sheet expands to fill the page,
+ * and colors are forced on so the accents and paper tone survive the
+ * browser's "Save as PDF" export.
+ */
+@media print {
+  @page {
+    margin: 14mm;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    font-size: 16px !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .report-sheet {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .report-sheet,
+  .report-sheet * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
