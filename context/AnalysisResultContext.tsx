@@ -54,8 +54,10 @@ export interface ImpactImprovement {
  */
 export interface FacialAnalysisFeature {
   feature: string;
+
   /** 0–100 */
   confidence: number;
+
   status: string;
   explanation: string;
 }
@@ -142,7 +144,8 @@ const AnalysisResultContext = createContext<
 export const AnalysisResultProvider: React.FC<
   AnalysisResultProviderProps
 > = ({ children }) => {
-  const [result, setResultState] = useState<AnalysisResult | null>(null);
+  const [result, setResultState] =
+    useState<AnalysisResult | null>(null);
 
   const [persisted, setPersisted] = useState(false);
 
@@ -162,21 +165,40 @@ export const AnalysisResultProvider: React.FC<
    */
   useEffect(() => {
     try {
-      const storedResult = sessionStorage.getItem(STORAGE_KEY);
+      const storedResult =
+        sessionStorage.getItem(STORAGE_KEY);
 
       if (storedResult) {
         const parsed = JSON.parse(storedResult);
 
-        const restoredResult = coerceAnalysisResult(parsed);
+        const restoredResult =
+          coerceAnalysisResult(parsed);
 
-        if (restoredResult) {
-          setResultState(restoredResult);
+        /*
+         * coerceAnalysisResult returns:
+         *
+         * {
+         *   ok: true,
+         *   data: AnalysisResult
+         * }
+         *
+         * or:
+         *
+         * {
+         *   ok: false
+         * }
+         *
+         * We must check `ok` before accessing `data`.
+         */
+        if (restoredResult.ok) {
+          setResultState(restoredResult.data);
         } else {
           sessionStorage.removeItem(STORAGE_KEY);
         }
       }
 
-      const storedPersisted = sessionStorage.getItem(PERSISTED_KEY);
+      const storedPersisted =
+        sessionStorage.getItem(PERSISTED_KEY);
 
       if (storedPersisted === "true") {
         setPersisted(true);
@@ -202,7 +224,10 @@ export const AnalysisResultProvider: React.FC<
    * Store a new analysis result.
    */
   const setResult = useCallback(
-    (next: AnalysisResult | null, options?: SetResultOptions) => {
+    (
+      next: AnalysisResult | null,
+      options?: SetResultOptions
+    ) => {
       setResultState(next);
 
       const nextPersisted = next
@@ -243,7 +268,10 @@ export const AnalysisResultProvider: React.FC<
     setPersisted(true);
 
     try {
-      sessionStorage.setItem(PERSISTED_KEY, "true");
+      sessionStorage.setItem(
+        PERSISTED_KEY,
+        "true"
+      );
     } catch (error) {
       console.error(
         "Failed to save persisted state:",
@@ -301,7 +329,9 @@ export const AnalysisResultProvider: React.FC<
  */
 export const useAnalysisResult =
   (): AnalysisResultContextValue => {
-    const context = useContext(AnalysisResultContext);
+    const context = useContext(
+      AnalysisResultContext
+    );
 
     if (context === undefined) {
       throw new Error(
