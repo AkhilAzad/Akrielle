@@ -199,6 +199,8 @@ export function Hero() {
               <LiquidReveal
                 className="aspect-[4/5] w-full rounded-card border border-line"
                 alt="Facial analysis preview"
+                baseSrc="/assets/hero/hero-portrait.png"
+                revealSrc="/assets/hero/hero-portrait.png"
               />
               <HeroMetricCard />
             </motion.div>

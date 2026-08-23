@@ -10,6 +10,7 @@ interface UseFileUploadResult {
   isDragging: boolean;
   inputRef: React.RefObject<HTMLInputElement | null>;
   openFileDialog: () => void;
+  handleFile: (file: File) => void;
   handleFiles: (files: FileList | null) => void;
   removeImage: () => void;
   dragHandlers: {
@@ -36,10 +37,10 @@ export function useFileUpload(): UseFileUploadResult {
     };
   }, [selectedImage]);
 
-  const handleFiles = useCallback((files: FileList | null) => {
-    const file = files?.[0];
-    if (!file) return;
-
+  // Validate + preview a single File. This is the shared entry point used by
+  // both device uploads (via handleFiles) and camera captures, so a photo from
+  // the camera goes through the exact same checks as one picked from disk.
+  const handleFile = useCallback((file: File) => {
     // Fast, synchronous checks first (type + size).
     const validationError = validateImageFile(file);
     if (validationError) {
@@ -66,6 +67,15 @@ export function useFileUpload(): UseFileUploadResult {
       });
     });
   }, []);
+
+  const handleFiles = useCallback(
+    (files: FileList | null) => {
+      const file = files?.[0];
+      if (!file) return;
+      handleFile(file);
+    },
+    [handleFile]
+  );
 
   const openFileDialog = useCallback(() => {
     inputRef.current?.click();
@@ -107,6 +117,7 @@ export function useFileUpload(): UseFileUploadResult {
     isDragging,
     inputRef,
     openFileDialog,
+    handleFile,
     handleFiles,
     removeImage,
     dragHandlers: { onDragOver, onDragLeave, onDrop },

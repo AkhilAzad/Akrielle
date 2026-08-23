@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ImagePlus, X, AlertCircle } from "lucide-react";
+import { ImagePlus, X, AlertCircle, Camera } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatBytes } from "@/utils/file";
 import {
@@ -11,6 +11,8 @@ import {
   MAX_FILE_SIZE_LABEL,
 } from "@/constants/upload";
 import { useFileUpload } from "@/hooks/useFileUpload";
+import { CameraCapture } from "@/components/upload/CameraCapture";
+import { Button } from "@/components/common/Button";
 import { springSoft } from "@/components/animations/variants";
 import type { SelectedImage, UploadError } from "@/types/upload";
 
@@ -27,10 +29,13 @@ export function UploadCard({ onImageChange }: UploadCardProps) {
     isDragging,
     inputRef,
     openFileDialog,
+    handleFile,
     handleFiles,
     removeImage,
     dragHandlers,
   } = useFileUpload();
+
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     handleFiles(event.target.files);
@@ -51,7 +56,13 @@ export function UploadCard({ onImageChange }: UploadCardProps) {
         tabIndex={!selectedImage ? 0 : undefined}
         aria-label={!selectedImage ? "Upload a photo — click or drag and drop" : undefined}
         onKeyDown={(event) => {
-          if (!selectedImage && (event.key === "Enter" || event.key === " ")) {
+          // Only respond to keys on the dropzone itself — not on nested
+          // controls (e.g. the "Use camera" button) whose events bubble up.
+          if (
+            event.target === event.currentTarget &&
+            !selectedImage &&
+            (event.key === "Enter" || event.key === " ")
+          ) {
             event.preventDefault();
             openFileDialog();
           }
@@ -151,12 +162,44 @@ export function UploadCard({ onImageChange }: UploadCardProps) {
               <p className="eyebrow text-ink-faint">
                 {ACCEPTED_FILE_EXTENSIONS_LABEL} · Up to {MAX_FILE_SIZE_LABEL}
               </p>
+
+              <div className="flex items-center gap-3" aria-hidden="true">
+                <span className="h-px w-8 bg-line" />
+                <span className="eyebrow text-ink-faint">or</span>
+                <span className="h-px w-8 bg-line" />
+              </div>
+
+              <Button
+                type="button"
+                variant="secondary"
+                size="md"
+                onClick={(event) => {
+                  // Don't let the click bubble to the dropzone (which would
+                  // also open the file dialog).
+                  event.stopPropagation();
+                  setIsCameraOpen(true);
+                }}
+              >
+                <span className="inline-flex items-center gap-2">
+                  <Camera className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+                  Use camera
+                </span>
+              </Button>
             </motion.div>
           )}
         </AnimatePresence>
       </motion.div>
 
       <UploadErrorMessage error={error} />
+
+      <AnimatePresence>
+        {isCameraOpen && (
+          <CameraCapture
+            onCapture={handleFile}
+            onClose={() => setIsCameraOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
