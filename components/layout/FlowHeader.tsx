@@ -53,13 +53,13 @@ export function FlowHeader({ backHref, backLabel = "Back" }: FlowHeaderProps) {
           {SITE.name}
         </Link>
 
-        {/* Right slot — fixed width to keep the logo centered. Shows an
-            account shortcut once signed in, otherwise stays empty. */}
+        {/* Right slot — fixed width to keep the logo centered. Shows a
+            profile shortcut once signed in, otherwise stays empty. */}
         <div className="flex w-[64px] justify-end">
           {showAccount && (
             <Link
-              href="/account"
-              aria-label="Your account"
+              href="/profile"
+              aria-label="Your profile"
               className="inline-flex h-9 w-9 items-center justify-center rounded-full text-ink-muted transition-colors duration-300 hover:bg-surface hover:text-ink"
             >
               <UserRound className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />

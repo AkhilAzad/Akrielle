@@ -116,11 +116,11 @@ export function NavMenu({ open, onClose }: NavMenuProps) {
             {showAccount && (
               <motion.div variants={item} className="mt-4">
                 <Link
-                  href={signedIn ? "/account" : "/signin"}
+                  href={signedIn ? "/profile" : "/signin"}
                   onClick={onClose}
                   className="text-sm text-ivory-muted underline-offset-4 transition-colors duration-300 hover:text-ivory hover:underline"
                 >
-                  {signedIn ? "Your account" : "Sign in"}
+                  {signedIn ? "Your profile" : "Sign in"}
                 </Link>
               </motion.div>
             )}

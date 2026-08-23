@@ -25,7 +25,7 @@ function BrandMark() {
 
 /**
  * Account entry point for the landing header. Reflects auth state: a link to
- * the account page when signed in, a sign-in link otherwise. Renders nothing
+ * the profile page when signed in, a sign-in link otherwise. Renders nothing
  * while the session is still restoring, or when accounts aren't configured.
  */
 function AccountLink() {
@@ -34,11 +34,11 @@ function AccountLink() {
   const signedIn = status === "signed-in";
   return (
     <Link
-      href={signedIn ? "/account" : "/signin"}
+      href={signedIn ? "/profile" : "/signin"}
       className="hidden items-center gap-2 font-body text-sm text-ink-muted transition-colors duration-300 hover:text-ink lg:inline-flex"
     >
       <UserRound className="h-4 w-4" strokeWidth={1.6} aria-hidden="true" />
-      {signedIn ? "Account" : "Sign in"}
+      {signedIn ? "Profile" : "Sign in"}
     </Link>
   );
 }
