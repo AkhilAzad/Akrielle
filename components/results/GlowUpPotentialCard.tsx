@@ -91,10 +91,10 @@ export function GlowUpPotentialCard({ data }: GlowUpPotentialCardProps) {
           )}
         </div>
 
-        <div className="flex shrink-0 items-center gap-6 sm:gap-10">
+        <div className="flex shrink-0 items-center gap-3 sm:gap-10">
           <div className="flex flex-col items-center gap-3">
             <div
-              className="relative flex h-[120px] w-[120px] items-center justify-center rounded-full border border-white/15"
+              className="relative flex h-[min(120px,26vw)] w-[min(120px,26vw)] items-center justify-center rounded-full border border-white/15"
               role="img"
               aria-label={`Current appearance score: ${data.currentAppearanceScore} out of 100`}
             >
@@ -111,7 +111,7 @@ export function GlowUpPotentialCard({ data }: GlowUpPotentialCardProps) {
 
           <div className="flex flex-col items-center gap-3">
             <div
-              className="relative flex h-[120px] w-[120px] items-center justify-center rounded-full border border-accent/50"
+              className="relative flex h-[min(120px,26vw)] w-[min(120px,26vw)] items-center justify-center rounded-full border border-accent/50"
               role="img"
               aria-label={`Improvement potential score: ${data.potentialScore} out of 100`}
             >

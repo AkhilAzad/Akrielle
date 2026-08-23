@@ -50,6 +50,18 @@
 }
 @media (max-width: 640px) {
   html { font-size: 4.444444vw; }
+
+  /* Mobile overflow safety net. Prevents any stray horizontal scroll from a
+     fixed-px element that bleeds a sub-pixel past the viewport. `clip` is
+     preferred: unlike `hidden` it does NOT turn the body into a scroll
+     container, so Lenis smooth-scroll and the fixed navbar are unaffected.
+     `hidden` is the fallback for engines without `clip`. No position:sticky
+     exists below 640px, so neither property has layout side effects here. */
+  html,
+  body {
+    overflow-x: hidden;
+    overflow-x: clip;
+  }
 }
 
 @layer base {

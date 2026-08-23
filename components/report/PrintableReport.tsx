@@ -36,9 +36,9 @@ export function PrintableReport({
   generatedAt: string;
 }) {
   return (
-    <article className="report-sheet mx-auto w-full max-w-[820px] bg-paper px-10 py-12 text-ink md:px-14">
+    <article className="report-sheet mx-auto w-full max-w-[820px] bg-paper px-5 py-10 text-ink sm:px-10 sm:py-12 md:px-14">
       {/* Masthead */}
-      <header className="flex items-end justify-between border-b border-ink/15 pb-6">
+      <header className="flex flex-col gap-4 border-b border-ink/15 pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="font-mono text-[12px] uppercase tracking-widest3 text-ink">
             Alkline
@@ -47,7 +47,7 @@ export function PrintableReport({
             Beauty, Understood by Intelligence.
           </p>
         </div>
-        <div className="text-right">
+        <div className="sm:text-right">
           <h1 className="font-display text-2xl font-medium leading-none">
             Beauty Report
           </h1>
@@ -58,7 +58,7 @@ export function PrintableReport({
       </header>
 
       {/* Score + Glow-up */}
-      <section className="mt-10 grid grid-cols-2 gap-6 break-inside-avoid">
+      <section className="mt-10 grid grid-cols-1 gap-6 break-inside-avoid sm:grid-cols-2">
         <div className="rounded-card-sm border border-line bg-surface px-7 py-6">
           <Label>Beauty Harmony Score</Label>
           <div className="mt-3 flex items-baseline gap-2">
@@ -98,7 +98,7 @@ export function PrintableReport({
           <h2 className="font-display text-xl font-medium">Beauty Profile</h2>
           <span className="h-px flex-1 bg-line" aria-hidden="true" />
         </div>
-        <div className="mt-5 grid grid-cols-2 gap-x-8 gap-y-5">
+        <div className="mt-5 grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2">
           {model.profile.map((item) => (
             <div key={item.label} className="break-inside-avoid">
               <div className="flex items-baseline justify-between">
@@ -126,7 +126,7 @@ export function PrintableReport({
           </h2>
           <span className="h-px flex-1 bg-line" aria-hidden="true" />
         </div>
-        <div className="mt-5 grid grid-cols-2 gap-x-8 gap-y-4">
+        <div className="mt-5 grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
           {model.facial.map((item, index) => (
             <div
               key={`${item.feature}-${index}`}
@@ -200,7 +200,7 @@ export function PrintableReport({
           <h2 className="font-display text-xl font-medium">Recommendations</h2>
           <span className="h-px flex-1 bg-line" aria-hidden="true" />
         </div>
-        <div className="mt-5 grid grid-cols-2 gap-x-8 gap-y-5">
+        <div className="mt-5 grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2">
           {model.recommendations.map((item) => (
             <div key={item.category} className="break-inside-avoid">
               <Label>{item.category}</Label>
