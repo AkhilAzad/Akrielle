@@ -30,7 +30,7 @@ import {
   saveAnalysis,
   listAnalyses,
   deleteAnalysis,
-} from "@/database/supabase/db";
+} from "@/lib/history/historyService";
 import type { AnalysisResult } from "@/types/analysis";
 import type {
   AuthSession,
