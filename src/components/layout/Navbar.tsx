@@ -7,7 +7,6 @@ import { Menu, UserRound } from "lucide-react";
 import { NAV_LINKS, PRIMARY_CTA_LABEL, SITE } from "@/config/site";
 import { Container } from "@/components/common/Container";
 import { Button } from "@/components/common/Button";
-import { Clock } from "@/components/layout/Clock";
 import { NavMenu } from "@/components/layout/NavMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/utils/utils";
@@ -24,21 +23,36 @@ function BrandMark() {
 }
 
 /**
- * Account entry point for the landing header. Reflects auth state: a link to
- * the profile page when signed in, a sign-in link otherwise. Renders nothing
- * while the session is still restoring, or when accounts aren't configured.
+ * The single account entry point — deliberately kept distinct from the primary
+ * scan CTA, and reduced to one clean element per auth state:
+ *   - signed in  → one avatar icon linking to the profile
+ *   - signed out → a single quiet "Log in" link
+ * Renders nothing while the session is still restoring, or when accounts
+ * aren't configured. Desktop only; the mobile overlay carries its own account
+ * row.
  */
-function AccountLink() {
+function AccountAction() {
   const { status, configured } = useAuth();
   if (!configured || status === "initializing") return null;
-  const signedIn = status === "signed-in";
+
+  if (status === "signed-in") {
+    return (
+      <Link
+        href="/profile"
+        aria-label="Your account"
+        className="hidden h-9 w-9 items-center justify-center rounded-full border border-line text-ink-muted transition-colors duration-300 ease-signature hover:border-ink/40 hover:text-ink lg:inline-flex"
+      >
+        <UserRound className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.6} aria-hidden="true" />
+      </Link>
+    );
+  }
+
   return (
     <Link
-      href={signedIn ? "/profile" : "/signin"}
-      className="hidden items-center gap-2 font-body text-sm text-ink-muted transition-colors duration-300 hover:text-ink lg:inline-flex"
+      href="/signin"
+      className="hidden text-sm font-medium text-ink-muted transition-colors duration-300 ease-signature hover:text-ink lg:inline-flex"
     >
-      <UserRound className="h-4 w-4" strokeWidth={1.6} aria-hidden="true" />
-      {signedIn ? "Profile" : "Sign in"}
+      Log in
     </Link>
   );
 }
@@ -70,6 +84,9 @@ export function Navbar() {
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
+  const navLinkClass =
+    "group relative py-1 text-sm font-medium text-ink-muted transition-colors duration-300 ease-signature hover:text-ink";
+
   return (
     <>
       <motion.header
@@ -86,50 +103,59 @@ export function Navbar() {
         }}
         className={cn(
           "fixed inset-x-0 top-0 z-50 transition-colors duration-500 ease-signature",
-          scrolled ? "border-b border-line bg-paper/85 backdrop-blur-md" : "border-b border-transparent bg-transparent"
+          scrolled
+            ? "border-b border-line bg-paper/80 backdrop-blur-xl"
+            : "border-b border-transparent bg-transparent"
         )}
       >
-        <Container className="flex h-20 items-center justify-between gap-6">
-          <a href="#" className="group inline-flex items-center gap-2.5">
+        {/* Balanced three-zone layout on desktop (logo · centered nav · actions);
+            collapses to logo + menu below lg. */}
+        <Container className="flex h-16 items-center justify-between gap-6 lg:grid lg:grid-cols-[1fr_auto_1fr]">
+          {/* Zone 1 — brand */}
+          <a
+            href="#"
+            className="group inline-flex items-center gap-2.5 lg:justify-self-start"
+            aria-label={`${SITE.name} — back to top`}
+          >
             <BrandMark />
             <span className="text-lg font-semibold tracking-tightest text-ink">
               {SITE.name}
             </span>
           </a>
 
-          <nav className="hidden items-center gap-9 md:flex" aria-label="Primary">
+          {/* Zone 2 — product navigation, centered */}
+          <nav
+            className="hidden items-center gap-8 lg:flex lg:justify-self-center"
+            aria-label="Primary"
+          >
             {NAV_LINKS.map((link) => {
-              const linkClass =
-                "group relative font-body text-sm text-ink-muted transition-colors duration-300 hover:text-ink";
               const inner = (
                 <>
                   {link.label}
                   <span
-                    className="absolute -bottom-1 left-0 h-px w-0 bg-accent transition-all duration-300 ease-signature group-hover:w-full"
+                    className="absolute -bottom-0.5 left-0 h-px w-0 bg-accent transition-all duration-300 ease-signature group-hover:w-full"
                     aria-hidden="true"
                   />
                 </>
               );
               // In-page anchors keep native <a> for smooth scrolling; real
-              // routes use <Link> so navigation stays client-side (and keeps
-              // the app's page transitions) like everywhere else.
+              // routes use <Link> so navigation stays client-side.
               return link.href.startsWith("/") ? (
-                <Link key={link.href} href={link.href} className={linkClass}>
+                <Link key={link.href} href={link.href} className={navLinkClass}>
                   {inner}
                 </Link>
               ) : (
-                <a key={link.href} href={link.href} className={linkClass}>
+                <a key={link.href} href={link.href} className={navLinkClass}>
                   {inner}
                 </a>
               );
             })}
           </nav>
 
-          <div className="flex items-center gap-5">
-            <Clock className="hidden text-[0.75rem] text-ink-muted xl:inline-flex" />
-            <AccountLink />
+          {/* Zone 3 — primary CTA + single account element (desktop); menu (mobile) */}
+          <div className="flex items-center gap-3 lg:justify-self-end">
             <Button
-              href="/upload"
+              href="/onboarding"
               size="md"
               variant="primary"
               showArrow
@@ -137,15 +163,15 @@ export function Navbar() {
             >
               {PRIMARY_CTA_LABEL}
             </Button>
+            <AccountAction />
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
               aria-label="Open menu"
               aria-expanded={menuOpen}
-              className="group inline-flex items-center gap-2 rounded-pill border border-line px-4 py-2.5 text-sm font-medium text-ink transition-colors duration-500 ease-signature hover:border-ink"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-line text-ink transition-colors duration-500 ease-signature hover:border-ink lg:hidden"
             >
-              <Menu className="h-4 w-4" strokeWidth={1.8} aria-hidden="true" />
-              <span className="hidden sm:inline">Menu</span>
+              <Menu className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
             </button>
           </div>
         </Container>

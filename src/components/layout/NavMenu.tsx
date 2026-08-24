@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { NAV_LINKS, PRIMARY_CTA_LABEL, SITE } from "@/config/site";
 import { useAuth } from "@/contexts/AuthContext";
-import { Clock } from "@/components/layout/Clock";
 import { easeSignature } from "@/components/animations/variants";
 
 interface NavMenuProps {
@@ -45,7 +44,7 @@ export function NavMenu({ open, onClose }: NavMenuProps) {
 
   const items = [
     ...NAV_LINKS,
-    { label: PRIMARY_CTA_LABEL, href: "/upload" },
+    { label: PRIMARY_CTA_LABEL, href: "/onboarding" },
   ];
 
   const container = {
@@ -114,20 +113,30 @@ export function NavMenu({ open, onClose }: NavMenuProps) {
             ))}
 
             {showAccount && (
-              <motion.div variants={item} className="mt-4">
-                <Link
-                  href={signedIn ? "/profile" : "/signin"}
-                  onClick={onClose}
-                  className="text-sm text-ivory-muted underline-offset-4 transition-colors duration-300 hover:text-ivory hover:underline"
-                >
-                  {signedIn ? "Your profile" : "Sign in"}
-                </Link>
+              <motion.div variants={item} className="mt-4 flex flex-col gap-3">
+                {signedIn ? (
+                  <Link
+                    href="/profile"
+                    onClick={onClose}
+                    className="text-sm text-ivory-muted underline-offset-4 transition-colors duration-300 hover:text-ivory hover:underline"
+                  >
+                    Your profile
+                  </Link>
+                ) : (
+                  <Link
+                    href="/signin"
+                    onClick={onClose}
+                    className="text-sm text-ivory-muted underline-offset-4 transition-colors duration-300 hover:text-ivory hover:underline"
+                  >
+                    Log in
+                  </Link>
+                )}
               </motion.div>
             )}
           </motion.nav>
 
           <div className="flex items-center justify-between border-t border-white/10 px-5 py-6 text-[0.6875rem] uppercase tracking-widest2 text-ivory-faint sm:px-8">
-            <Clock withLabel />
+            <span>{SITE.name}</span>
             <span>{SITE.tagline}</span>
           </div>
         </motion.div>

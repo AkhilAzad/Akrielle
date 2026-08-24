@@ -14,7 +14,7 @@ const FOOTER_LINKS = [
     links: [
       { label: "How It Works", href: "#how-it-works" },
       { label: "Features", href: "#features" },
-      { label: "Start Your Beauty Scan", href: "/upload" },
+      { label: "Start Your Beauty Scan", href: "/onboarding" },
     ],
   },
   {
@@ -57,7 +57,7 @@ export function Footer() {
             Beauty, understood by intelligence.
           </motion.h2>
           <motion.div variants={staggerItem}>
-            <Button href="/upload" size="lg" variant="gold" showArrow>
+            <Button href="/onboarding" size="lg" variant="gold" showArrow>
               {PRIMARY_CTA_LABEL}
             </Button>
           </motion.div>

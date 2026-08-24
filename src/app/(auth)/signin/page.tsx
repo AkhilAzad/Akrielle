@@ -55,7 +55,11 @@ function SignInInner() {
 
   const next = sanitizeNext(searchParams.get("next"));
 
-  const [mode, setMode] = useState<Mode>("signin");
+  // Which view opens first is a routing concern: /signin shows the login view,
+  // /signin?mode=signup opens the sign-up view directly. Users can still toggle
+  // between the two in-page; this only sets the initial mode.
+  const initialMode: Mode = searchParams.get("mode") === "signup" ? "signup" : "signin";
+  const [mode, setMode] = useState<Mode>(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pending, setPending] = useState(false);
