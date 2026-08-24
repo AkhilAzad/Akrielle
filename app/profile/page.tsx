@@ -3,45 +3,31 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import {
-  ScanFace,
-  Palette,
-  Droplet,
-  Scale,
-  Layers,
-  Scissors,
-  Leaf,
-  Loader2,
-  LogOut,
-  Sparkles,
-} from "lucide-react";
+import { Loader2, LogOut, Sparkles } from "lucide-react";
 
 import { FlowHeader } from "@/components/layout/FlowHeader";
 import { Container } from "@/components/common/Container";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { Button } from "@/components/common/Button";
-import { ProfileCard } from "@/components/results/ProfileCard";
-import { ImpactImprovementList } from "@/components/results/ImpactImprovementList";
-import { RecommendationGrid } from "@/components/results/RecommendationGrid";
 import { ProfileHero } from "@/components/profile/ProfileHero";
 import { ProfileHistoryCard } from "@/components/profile/ProfileHistoryCard";
+import { PersonalDetailsCard } from "@/components/profile/PersonalDetailsCard";
+import { AppearanceCard } from "@/components/profile/AppearanceCard";
+import { PreferencesCard } from "@/components/profile/PreferencesCard";
+import { PortfolioSection } from "@/components/profile/PortfolioSection";
+import { AnalysisDetails } from "@/components/profile/AnalysisDetails";
 import {
   staggerContainer,
   viewportOnce,
   easeSignature,
 } from "@/components/animations/variants";
-import { getImpactAreaIcon } from "@/utils/resultIcons";
 
 import { useAnalysisResult } from "@/context/AnalysisResultContext";
 import { useAuth } from "@/context/AuthContext";
 import { useImage } from "@/context/ImageContext";
+import { useOnboarding } from "@/context/OnboardingContext";
 import type { AnalysisResult } from "@/context/AnalysisResultContext";
 import type { SavedAnalysis } from "@/types/account";
-import type {
-  BeautyProfileAttribute,
-  ImpactImprovementCardData,
-  RecommendationItem,
-} from "@/types/results";
 
 /**
  * Two analyses are treated as the "same scan" when their headline readings
@@ -73,6 +59,7 @@ export default function ProfilePage() {
   const { result, restoring, setResult } = useAnalysisResult();
   const { status, user, configured, listHistory, signOut } = useAuth();
   const { imagePreviewUrl } = useImage();
+  const { data: onboarding } = useOnboarding();
 
   // Whether we should attempt to load saved history at all.
   const canLoadHistory = configured && status === "signed-in";
@@ -105,6 +92,7 @@ export default function ProfilePage() {
   // The latest analysis: prefer the live in-session result, otherwise fall
   // back to the newest saved scan (e.g. after a refresh for a signed-in user).
   const latest: AnalysisResult | null = result ?? newestSaved?.result ?? null;
+  const hasAnalysis = latest !== null;
 
   // A real date for the latest scan, when we can attribute one honestly.
   const scanDateLabel = useMemo<string>(() => {
@@ -130,6 +118,23 @@ export default function ProfilePage() {
     router.push("/results");
   };
 
+  // Hero stats — only meaningful when an analysis exists (else hidden).
+  const roundedScore = latest ? Math.round(latest.beautyScore) : 0;
+  const confidencePercent = latest ? Math.round(latest.confidence) : 0;
+  const glowUpGain = latest
+    ? Math.max(
+        0,
+        Math.round(
+          latest.glowUp.potentialScore - latest.glowUp.currentAppearanceScore
+        )
+      )
+    : 0;
+
+  // Prefer the name chosen during onboarding; fall back to the account email,
+  // then a neutral label for anonymous visitors.
+  const onboardingName = onboarding.profile?.displayName?.trim();
+  const displayName = onboardingName || user?.email || "Your beauty profile";
+
   // ---- Loading ------------------------------------------------------------
   if (settling) {
     return (
@@ -144,141 +149,6 @@ export default function ProfilePage() {
       </>
     );
   }
-
-  // ---- Empty (no analysis anywhere) --------------------------------------
-  if (!latest) {
-    return (
-      <>
-        <FlowHeader backHref="/" />
-        <main className="py-16 md:py-24">
-          <Container className="flex max-w-[720px] flex-col">
-            <SectionHeading
-              eyebrow="Your profile"
-              title="Your beauty profile."
-              description={
-                user?.email
-                  ? `Signed in as ${user.email}.`
-                  : "Your latest analysis and saved scans live here."
-              }
-            />
-            <div className="mt-12 flex flex-col items-center gap-6 rounded-card border border-dashed border-line bg-surface/60 py-16 text-center">
-              <div className="flex flex-col gap-2">
-                <h2 className="font-display text-2xl text-ink">No analysis yet.</h2>
-                <p className="mx-auto max-w-sm text-[15px] leading-relaxed text-ink-muted">
-                  Run your first beauty scan and your profile will fill in
-                  automatically — no data is invented here.
-                </p>
-              </div>
-              <Button href="/upload" size="lg" showArrow>
-                Run your first scan
-              </Button>
-            </div>
-          </Container>
-        </main>
-      </>
-    );
-  }
-
-  // ---- Derived display data (all from `latest`) --------------------------
-  const confidencePercent = Math.round(latest.confidence);
-  const roundedScore = Math.round(latest.beautyScore);
-  const glowUpGain = Math.max(
-    0,
-    Math.round(latest.glowUp.potentialScore - latest.glowUp.currentAppearanceScore)
-  );
-
-  // "Symmetry" is a real reading: the Eye Symmetry feature from the facial
-  // analysis. If it's missing, fall back to the overall facial-harmony field.
-  const symmetryFeature = latest.facialAnalysis.find((f) =>
-    /symmetry/i.test(f.feature)
-  );
-  const symmetryValue = symmetryFeature?.status ?? latest.facialHarmony;
-  const symmetryConfidence = symmetryFeature
-    ? Math.round(symmetryFeature.confidence)
-    : confidencePercent;
-  const symmetryExplanation =
-    symmetryFeature?.explanation ??
-    `Overall facial harmony reads as ${latest.facialHarmony.toLowerCase()}.`;
-
-  const summaryAttributes: BeautyProfileAttribute[] = [
-    {
-      id: "face-shape",
-      icon: ScanFace,
-      label: "Face Shape",
-      value: latest.faceShape,
-      confidence: confidencePercent,
-      explanation: `Alkline reads your face shape as ${latest.faceShape.toLowerCase()}.`,
-    },
-    {
-      id: "skin-tone",
-      icon: Palette,
-      label: "Skin Tone",
-      value: latest.skinTone,
-      confidence: confidencePercent,
-      explanation: `Your complexion reads as ${latest.skinTone.toLowerCase()} overall.`,
-    },
-    {
-      id: "undertone",
-      icon: Droplet,
-      label: "Undertone",
-      value: latest.undertone,
-      confidence: confidencePercent,
-      explanation: `A ${latest.undertone.toLowerCase()} undertone was detected beneath the surface tone.`,
-    },
-    {
-      id: "symmetry",
-      icon: Scale,
-      label: "Symmetry",
-      value: symmetryValue,
-      confidence: symmetryConfidence,
-      explanation: symmetryExplanation,
-    },
-  ];
-
-  const observations: ImpactImprovementCardData[] = latest.impactImprovements
-    .slice(0, 3)
-    .map((item, index) => ({
-      id: `obs-${index}-${item.area}`,
-      icon: getImpactAreaIcon(item.area),
-      rank: index + 1,
-      area: item.area,
-      priority: item.priority,
-      explanation: item.explanation,
-      expectedImprovement: item.expectedImprovement,
-    }));
-
-  const recommendations: RecommendationItem[] = [
-    {
-      id: "foundation",
-      icon: Layers,
-      category: "Foundation",
-      value: latest.recommendations.foundation,
-      reason: `Complements your ${latest.skinTone.toLowerCase()} skin tone and ${latest.undertone.toLowerCase()} undertone.`,
-    },
-    {
-      id: "lipstick",
-      icon: Droplet,
-      category: "Lipstick",
-      value: latest.recommendations.lipstick,
-      reason: `Suited to your ${latest.undertone.toLowerCase()} undertone.`,
-    },
-    {
-      id: "hairstyle",
-      icon: Scissors,
-      category: "Hairstyle",
-      value: latest.recommendations.hairstyle,
-      reason: `Frames your ${latest.faceShape.toLowerCase()} face shape at its most flattering angles.`,
-    },
-    {
-      id: "skincare",
-      icon: Leaf,
-      category: "Skincare Focus",
-      value: latest.recommendations.skincare,
-      reason: "Supports your skin's natural balance and evenness over time.",
-    },
-  ];
-
-  const displayName = user?.email ?? "Your beauty profile";
 
   return (
     <>
@@ -296,7 +166,7 @@ export default function ProfilePage() {
             <SectionHeading
               eyebrow="Your profile"
               title="Your beauty profile."
-              description="Your latest analysis, key readings, and saved scans — all in one place."
+              description="Your details, preferences, and analysis — all in one place."
             />
             {configured && status === "signed-in" && (
               <button
@@ -315,57 +185,20 @@ export default function ProfilePage() {
             photoUrl={imagePreviewUrl}
             email={user?.email ?? null}
             displayName={displayName}
+            hasAnalysis={hasAnalysis}
             score={roundedScore}
             confidence={confidencePercent}
             scanDateLabel={scanDateLabel}
             glowUpGain={glowUpGain}
           />
 
-          {/* Key readings. */}
-          <section aria-labelledby="profile-readings-heading">
-            <SectionHeading
-              eyebrow="Key readings"
-              title="What Alkline detected."
-              description="The core of your beauty profile, each with its own confidence level."
-            />
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={viewportOnce}
-              variants={staggerContainer(0.07)}
-              className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
-            >
-              {summaryAttributes.map((attribute) => (
-                <ProfileCard key={attribute.id} attribute={attribute} />
-              ))}
-            </motion.div>
-          </section>
+          {/* Editable profile — personal details, appearance, preferences. */}
+          <PersonalDetailsCard />
+          <AppearanceCard />
+          <PreferencesCard />
 
-          {/* Observations. */}
-          {observations.length > 0 && (
-            <section aria-labelledby="profile-observations-heading">
-              <SectionHeading
-                eyebrow="Observations"
-                title="Where to focus first."
-                description="Your highest-impact areas, ranked from what Alkline actually sees in your photo."
-              />
-              <div className="mt-12">
-                <ImpactImprovementList items={observations} />
-              </div>
-            </section>
-          )}
-
-          {/* Recommendations. */}
-          <section aria-labelledby="profile-recommendations-heading">
-            <SectionHeading
-              eyebrow="Recommendations"
-              title="Curated for your features."
-              description="A few suggestions grounded in your profile — see the full analysis for the complete set."
-            />
-            <div className="mt-12">
-              <RecommendationGrid items={recommendations} />
-            </div>
-          </section>
+          {/* AI-derived analysis (only when a real scan exists). */}
+          {latest && <AnalysisDetails latest={latest} />}
 
           {/* Scan history. */}
           <section aria-labelledby="profile-history-heading">
@@ -423,6 +256,9 @@ export default function ProfilePage() {
             </div>
           </section>
 
+          {/* Uploads / portfolio. */}
+          <PortfolioSection />
+
           {/* Actions. */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -432,12 +268,14 @@ export default function ProfilePage() {
             className="flex flex-col items-center gap-4 border-t border-line pt-16 sm:flex-row sm:justify-center"
           >
             <Button href="/upload" size="lg" showArrow>
-              Run New Scan
+              {hasAnalysis ? "Run New Scan" : "Run your first scan"}
             </Button>
-            <Button href="/results" variant="secondary" size="lg" className="gap-2">
-              <Sparkles className="h-4 w-4" strokeWidth={1.6} aria-hidden="true" />
-              View full analysis
-            </Button>
+            {hasAnalysis && (
+              <Button href="/results" variant="secondary" size="lg" className="gap-2">
+                <Sparkles className="h-4 w-4" strokeWidth={1.6} aria-hidden="true" />
+                View full analysis
+              </Button>
+            )}
           </motion.div>
         </Container>
       </main>

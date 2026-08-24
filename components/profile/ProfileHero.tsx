@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Calendar, TrendingUp, UserRound } from "lucide-react";
 import { easeSignature } from "@/components/animations/variants";
+import { Button } from "@/components/common/Button";
 
 interface ProfileHeroProps {
   /** In-session preview URL for the current photo, or null if unavailable. */
@@ -11,7 +12,9 @@ interface ProfileHeroProps {
   email: string | null;
   /** Heading shown beside the avatar. */
   displayName: string;
-  /** Latest beauty score, already rounded (0–100). */
+  /** Whether a real analysis exists to show a score/confidence for. */
+  hasAnalysis: boolean;
+  /** Latest beauty score, already rounded (0–100). Only shown when hasAnalysis. */
   score: number;
   /** AI confidence for the latest scan, already rounded (0–100). */
   confidence: number;
@@ -29,12 +32,15 @@ interface ProfileHeroProps {
  * Every value shown here is derived from the real latest analysis + the
  * signed-in user; nothing is fabricated. When no photo is available for the
  * session, a graceful avatar fallback (email initial, else a person glyph)
- * is shown instead of inventing an image.
+ * is shown instead of inventing an image. When there's no analysis yet, the
+ * score ring gives way to a "run your first scan" call to action rather than
+ * showing an empty or invented reading.
  */
 export function ProfileHero({
   photoUrl,
   email,
   displayName,
+  hasAnalysis,
   score,
   confidence,
   scanDateLabel,
@@ -90,50 +96,68 @@ export function ProfileHero({
             <h1 className="truncate text-2xl font-medium tracking-tightest text-ivory md:text-3xl">
               {displayName}
             </h1>
-            <span className="inline-flex items-center gap-2 text-sm text-ivory-muted">
-              <Calendar className="h-3.5 w-3.5 shrink-0" strokeWidth={1.6} aria-hidden="true" />
-              Latest scan · {scanDateLabel}
-            </span>
-          </div>
-        </div>
-
-        {/* Latest beauty score — accent ring, matching the results panel. */}
-        <div className="flex shrink-0 items-center gap-6 md:flex-col md:items-end md:gap-4">
-          <div className="flex flex-col items-center gap-3 md:items-end">
-            <div
-              className="relative flex h-[min(120px,30vw)] w-[min(120px,30vw)] items-center justify-center rounded-full border border-accent/50"
-              role="img"
-              aria-label={`Latest beauty score: ${score} out of 100`}
-            >
-              <div
-                className="pointer-events-none absolute inset-0 rounded-full opacity-40 blur-md"
-                style={{ background: "radial-gradient(circle, #B15F2C 0%, transparent 72%)" }}
-                aria-hidden="true"
-              />
-              <span className="relative flex items-baseline gap-0.5 text-accent-from">
-                <span className="text-4xl font-medium tracking-tightest">{score}</span>
-                <span className="text-sm text-ivory-faint">/100</span>
+            {hasAnalysis ? (
+              <span className="inline-flex items-center gap-2 text-sm text-ivory-muted">
+                <Calendar className="h-3.5 w-3.5 shrink-0" strokeWidth={1.6} aria-hidden="true" />
+                Latest scan · {scanDateLabel}
               </span>
-            </div>
-            <span className="eyebrow text-accent-from">Beauty score</span>
-          </div>
-
-          <div className="flex flex-col items-start gap-2 md:items-end">
-            <span className="inline-flex items-center gap-2 rounded-pill border border-white/15 bg-white/5 px-4 py-1.5 text-xs text-ivory">
-              AI confidence {confidence}%
-            </span>
-            {glowUpGain > 0 && (
-              <span className="inline-flex items-center gap-2 rounded-pill border border-white/15 bg-white/5 px-4 py-1.5 text-xs text-ivory">
-                <TrendingUp
-                  className="h-3.5 w-3.5 text-accent-from"
-                  strokeWidth={1.6}
-                  aria-hidden="true"
-                />
-                +{glowUpGain} point{glowUpGain === 1 ? "" : "s"} of headroom
+            ) : (
+              <span className="text-sm text-ivory-muted">
+                No analysis yet — run your first scan to build your profile.
               </span>
             )}
           </div>
         </div>
+
+        {/* Latest beauty score — accent ring, matching the results panel.
+            Falls back to a first-scan CTA when there's no analysis yet. */}
+        {hasAnalysis ? (
+          <div className="flex shrink-0 items-center gap-6 md:flex-col md:items-end md:gap-4">
+            <div className="flex flex-col items-center gap-3 md:items-end">
+              <div
+                className="relative flex h-[min(120px,30vw)] w-[min(120px,30vw)] items-center justify-center rounded-full border border-accent/50"
+                role="img"
+                aria-label={`Latest beauty score: ${score} out of 100`}
+              >
+                <div
+                  className="pointer-events-none absolute inset-0 rounded-full opacity-40 blur-md"
+                  style={{ background: "radial-gradient(circle, #B15F2C 0%, transparent 72%)" }}
+                  aria-hidden="true"
+                />
+                <span className="relative flex items-baseline gap-0.5 text-accent-from">
+                  <span className="text-4xl font-medium tracking-tightest">{score}</span>
+                  <span className="text-sm text-ivory-faint">/100</span>
+                </span>
+              </div>
+              <span className="eyebrow text-accent-from">Beauty score</span>
+            </div>
+
+            <div className="flex flex-col items-start gap-2 md:items-end">
+              <span className="inline-flex items-center gap-2 rounded-pill border border-white/15 bg-white/5 px-4 py-1.5 text-xs text-ivory">
+                AI confidence {confidence}%
+              </span>
+              {glowUpGain > 0 && (
+                <span className="inline-flex items-center gap-2 rounded-pill border border-white/15 bg-white/5 px-4 py-1.5 text-xs text-ivory">
+                  <TrendingUp
+                    className="h-3.5 w-3.5 text-accent-from"
+                    strokeWidth={1.6}
+                    aria-hidden="true"
+                  />
+                  +{glowUpGain} point{glowUpGain === 1 ? "" : "s"} of headroom
+                </span>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="flex shrink-0 flex-col items-start gap-3 md:items-end">
+            <Button href="/upload" variant="gold" size="lg" showArrow>
+              Run your first scan
+            </Button>
+            <span className="text-xs text-ivory-faint">
+              One photo — a private facial analysis.
+            </span>
+          </div>
+        )}
       </div>
     </motion.div>
   );

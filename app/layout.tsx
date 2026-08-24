@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import { Onest } from "next/font/google";
 
 import { AuthProvider } from "@/context/AuthContext";
+import { OnboardingProvider } from "@/context/OnboardingContext";
 import { ImageProvider } from "@/context/ImageContext";
 import { AnalysisResultProvider } from "@/context/AnalysisResultContext";
+import { ProfileProvider } from "@/context/ProfileContext";
+import { PortfolioProvider } from "@/context/PortfolioContext";
 import { PageTransition } from "@/components/animations/PageTransition";
 import { Loader } from "@/components/layout/Loader";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
@@ -50,11 +53,17 @@ export default function RootLayout({
         <RevealObserver />
         <Loader />
         <AuthProvider>
-          <ImageProvider>
-            <AnalysisResultProvider>
-              <PageTransition>{children}</PageTransition>
-            </AnalysisResultProvider>
-          </ImageProvider>
+          <OnboardingProvider>
+            <ImageProvider>
+              <AnalysisResultProvider>
+                <ProfileProvider>
+                  <PortfolioProvider>
+                    <PageTransition>{children}</PageTransition>
+                  </PortfolioProvider>
+                </ProfileProvider>
+              </AnalysisResultProvider>
+            </ImageProvider>
+          </OnboardingProvider>
         </AuthProvider>
       </body>
     </html>

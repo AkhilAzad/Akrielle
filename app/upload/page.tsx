@@ -1,8 +1,10 @@
 
 "use client";
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { Loader2 } from "lucide-react";
 import { FlowHeader } from "@/components/layout/FlowHeader";
 import { Container } from "@/components/common/Container";
 import { SectionHeading } from "@/components/common/SectionHeading";
@@ -10,6 +12,7 @@ import { Button } from "@/components/common/Button";
 import { UploadCard } from "@/components/upload/UploadCard";
 import { PrivacyNotice } from "@/components/upload/PrivacyNotice";
 import { useImage } from "@/context/ImageContext";
+import { useOnboarding } from "@/context/OnboardingContext";
 import type { SelectedImage } from "@/types/upload";
  
 const easing = [0.22, 1, 0.36, 1] as const;
@@ -17,6 +20,15 @@ const easing = [0.22, 1, 0.36, 1] as const;
 export default function UploadPage() {
   const router = useRouter();
   const { image, setImage } = useImage();
+  const { hydrated, hasCompleted } = useOnboarding();
+
+  // First-run guard: newcomers are routed through onboarding before the scan
+  // flow. Anonymous users who've completed (or skipped) onboarding pass freely.
+  useEffect(() => {
+    if (hydrated && !hasCompleted) {
+      router.replace(`/onboarding?next=${encodeURIComponent("/upload")}`);
+    }
+  }, [hydrated, hasCompleted, router]);
  
   const handleImageChange = (selected: SelectedImage | null) => {
     setImage(selected ? selected.file : null);
@@ -28,6 +40,22 @@ export default function UploadPage() {
     // no backend/storage is wired up here by design.
     router.push("/analysis");
   };
+
+  // While the onboarding decision is pending, or during the redirect for a
+  // first-time visitor, show a minimal loader instead of flashing the form.
+  if (!hydrated || !hasCompleted) {
+    return (
+      <>
+        <FlowHeader backHref="/" />
+        <main className="flex min-h-[60vh] items-center justify-center py-24">
+          <Loader2
+            className="h-8 w-8 animate-spin text-gold-deep"
+            aria-hidden="true"
+          />
+        </main>
+      </>
+    );
+  }
  
   return (
     <>
