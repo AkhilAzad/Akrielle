@@ -27,7 +27,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { useImage } from "@/contexts/ImageContext";
 import { useProfile } from "@/contexts/ProfileContext";
-import type { AnalysisResult } from "@/contexts/AnalysisResultContext";
+import type { AnalysisResult } from "@/types/analysis";
 import type { SavedAnalysis } from "@/types/account";
 
 /**

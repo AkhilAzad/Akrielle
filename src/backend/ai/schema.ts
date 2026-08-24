@@ -1,7 +1,7 @@
 import type {
   AnalysisResult,
   ImprovementPriority,
-} from "@/contexts/AnalysisResultContext";
+} from "@/types/analysis";
 
 /**
  * Turns a raw model response into a safe, fully-typed AnalysisResult.

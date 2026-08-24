@@ -1,7 +1,7 @@
 import { restBase, authedHeaders } from "@/database/supabase/config";
 import { uploadImage, deleteObject } from "@/database/supabase/storage";
 import { coerceStoredResult } from "@/backend/ai/schema";
-import type { AnalysisResult } from "@/contexts/AnalysisResultContext";
+import type { AnalysisResult } from "@/types/analysis";
 import type { SavedAnalysis } from "@/types/account";
 
 /**

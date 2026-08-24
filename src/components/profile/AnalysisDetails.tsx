@@ -10,7 +10,7 @@ import { RecommendationGrid } from "@/components/results/RecommendationGrid";
 import { staggerContainer, viewportOnce } from "@/components/animations/variants";
 import { getImpactAreaIcon } from "@/utils/resultIcons";
 
-import type { AnalysisResult } from "@/contexts/AnalysisResultContext";
+import type { AnalysisResult } from "@/types/analysis";
 import type {
   BeautyProfileAttribute,
   ImpactImprovementCardData,

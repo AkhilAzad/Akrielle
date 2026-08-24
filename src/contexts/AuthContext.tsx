@@ -31,7 +31,7 @@ import {
   listAnalyses,
   deleteAnalysis,
 } from "@/database/supabase/db";
-import type { AnalysisResult } from "@/contexts/AnalysisResultContext";
+import type { AnalysisResult } from "@/types/analysis";
 import type {
   AuthSession,
   AuthUser,

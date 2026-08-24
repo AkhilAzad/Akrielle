@@ -1,4 +1,4 @@
-import type { AnalysisResult } from "@/contexts/AnalysisResultContext";
+import type { AnalysisResult } from "@/types/analysis";
 
 /**
  * Account + persistence types shared across the Supabase REST layer, the

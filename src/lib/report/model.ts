@@ -1,4 +1,4 @@
-import type { AnalysisResult } from "@/contexts/AnalysisResultContext";
+import type { AnalysisResult } from "@/types/analysis";
 
 /**
  * A plain-data (icon-free, fully serializable) view of an analysis

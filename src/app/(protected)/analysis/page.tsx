@@ -14,7 +14,7 @@ import { useScanSequence } from "@/hooks/useScanSequence";
 import { useImage } from "@/contexts/ImageContext";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { useAnalysisResult } from "@/contexts/AnalysisResultContext";
-import type { AnalysisResult } from "@/contexts/AnalysisResultContext";
+import type { AnalysisResult } from "@/types/analysis";
 import { isPhotoErrorCode } from "@/types/analyze";
 import type { AnalyzeErrorBody } from "@/types/analyze";
 import {
