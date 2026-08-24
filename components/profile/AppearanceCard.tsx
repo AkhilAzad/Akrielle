@@ -15,7 +15,7 @@ import { EYE_COLORS, HAIR_COLORS, SKIN_TYPES } from "@/constants/profile";
 
 /**
  * Appearance details the user self-reports — hair colour, eye colour, and skin
- * type. These are distinct from Alkline's AI-derived readings (skin tone,
+ * type. These are distinct from AXL's AI-derived readings (skin tone,
  * undertone, etc.) and are stored locally via the profile context.
  */
 export function AppearanceCard() {

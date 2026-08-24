@@ -25,7 +25,7 @@ import {
 import { useAnalysisResult } from "@/context/AnalysisResultContext";
 import { useAuth } from "@/context/AuthContext";
 import { useImage } from "@/context/ImageContext";
-import { useOnboarding } from "@/context/OnboardingContext";
+import { useProfile } from "@/context/ProfileContext";
 import type { AnalysisResult } from "@/context/AnalysisResultContext";
 import type { SavedAnalysis } from "@/types/account";
 
@@ -59,7 +59,7 @@ export default function ProfilePage() {
   const { result, restoring, setResult } = useAnalysisResult();
   const { status, user, configured, listHistory, signOut } = useAuth();
   const { imagePreviewUrl } = useImage();
-  const { data: onboarding } = useOnboarding();
+  const { data: profile, avatarUrl } = useProfile();
 
   // Whether we should attempt to load saved history at all.
   const canLoadHistory = configured && status === "signed-in";
@@ -130,10 +130,10 @@ export default function ProfilePage() {
       )
     : 0;
 
-  // Prefer the name chosen during onboarding; fall back to the account email,
+  // Prefer the name saved on the profile; fall back to the account email,
   // then a neutral label for anonymous visitors.
-  const onboardingName = onboarding.profile?.displayName?.trim();
-  const displayName = onboardingName || user?.email || "Your beauty profile";
+  const profileName = profile.displayName.trim();
+  const displayName = profileName || user?.email || "Your beauty profile";
 
   // ---- Loading ------------------------------------------------------------
   if (settling) {
@@ -182,7 +182,7 @@ export default function ProfilePage() {
 
           {/* Premium summary hero. */}
           <ProfileHero
-            photoUrl={imagePreviewUrl}
+            photoUrl={imagePreviewUrl ?? avatarUrl}
             email={user?.email ?? null}
             displayName={displayName}
             hasAnalysis={hasAnalysis}

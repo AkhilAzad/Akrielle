@@ -26,7 +26,7 @@ interface ProfileHeroProps {
 
 /**
  * The premium header for the Profile page — a dark charcoal panel in the
- * established Alkline "stats panel" archetype (see GlowUpPotentialCard):
+ * established AXL "stats panel" archetype (see GlowUpPotentialCard):
  * radial accent glow, eyebrow-on-dark, ivory type, and an accent score ring.
  *
  * Every value shown here is derived from the real latest analysis + the

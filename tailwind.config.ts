@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Alkline Design Tokens — Lumora visual system
+ * AXL Design Tokens — Lumora visual system
  * ------------------------------------------------------------------
  * Re-skinned to match the original Lumora studio design. The palette
  * is a warm off-white canvas, near-black ink, and a single burnt-

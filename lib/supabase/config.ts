@@ -31,6 +31,11 @@ export function restBase(): string {
   return `${SUPABASE_URL}/rest/v1`;
 }
 
+/** Base URL for the Storage API (buckets/objects, signed URLs). */
+export function storageBase(): string {
+  return `${SUPABASE_URL}/storage/v1`;
+}
+
 /** Base headers every Supabase REST call needs (anon apikey + JSON). */
 export function baseHeaders(extra?: Record<string, string>): Record<string, string> {
   return {
@@ -46,4 +51,24 @@ export function authedHeaders(
   extra?: Record<string, string>
 ): Record<string, string> {
   return baseHeaders({ Authorization: `Bearer ${accessToken}`, ...extra });
+}
+
+/**
+ * Headers for authenticated Storage calls. Unlike `authedHeaders`, this does
+ * NOT force a JSON Content-Type — object uploads send raw binary, so the
+ * caller sets Content-Type (e.g. "image/jpeg") only when there's a body.
+ * `extra` carries Storage-specific headers such as `x-upsert`.
+ */
+export function storageHeaders(
+  accessToken: string,
+  contentType?: string,
+  extra?: Record<string, string>
+): Record<string, string> {
+  const headers: Record<string, string> = {
+    apikey: SUPABASE_ANON_KEY,
+    Authorization: `Bearer ${accessToken}`,
+    ...extra,
+  };
+  if (contentType) headers["Content-Type"] = contentType;
+  return headers;
 }

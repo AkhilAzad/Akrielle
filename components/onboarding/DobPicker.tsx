@@ -23,7 +23,7 @@ const columnLabel =
 
 /**
  * Date-of-birth picker: three synchronized scroll wheels (day / month / year)
- * in the established Alkline surface-panel style. A single selection band and
+ * in the established AXL surface-panel style. A single selection band and
  * shared edge fades span all three columns so they read as one control.
  *
  * The day wheel's range follows the selected month/year, and the day clamps

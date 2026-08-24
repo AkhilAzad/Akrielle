@@ -4,8 +4,8 @@ import { LegalLayout, LegalSection } from "@/components/legal/LegalLayout";
 import { Button } from "@/components/common/Button";
 
 export const metadata: Metadata = {
-  title: "Contact · Alkline",
-  description: "Get in touch with the Alkline team.",
+  title: "Contact · AXL",
+  description: "Get in touch with the AXL team.",
 };
 
 export default function ContactPage() {

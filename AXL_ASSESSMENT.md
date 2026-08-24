@@ -1,14 +1,14 @@
-# Alkline — Current Project Assessment
+# AXL — Current Project Assessment
 
 _Read-only assessment. No project code was changed, deleted, or rewritten to produce this document. Prepared 2026-08-24._
 
-Alkline is a **Next.js 16 web application** that gives a user an AI-generated "Beauty Profile" from a single photo: they upload or snap a face photo, it's sent to a Google Gemini vision model, and the app renders a structured analysis (scores, facial-feature breakdown, and personalized product/style recommendations) with an optional printable report and optional saved history. It is **anonymous-first** — the entire scan-to-results flow works with no account — and accounts/history are an optional layer that is fully coded but currently switched off.
+AXL is a **Next.js 16 web application** that gives a user an AI-generated "Beauty Profile" from a single photo: they upload or snap a face photo, it's sent to a Google Gemini vision model, and the app renders a structured analysis (scores, facial-feature breakdown, and personalized product/style recommendations) with an optional printable report and optional saved history. It is **anonymous-first** — the entire scan-to-results flow works with no account — and accounts/history are an optional layer that is fully coded but currently switched off.
 
 ---
 
-## 1. Everything Alkline currently does (working today)
+## 1. Everything AXL currently does (working today)
 
-**Marketing landing page** (`app/page.tsx`). A polished, animated, responsive one-pager: hero with a cursor "liquid-reveal" portrait and a live-analysis metric card, "how it works," features, "why Alkline," FAQ, and CTAs routing to the upload flow. All copy is centralized in `constants/landing.ts`.
+**Marketing landing page** (`app/page.tsx`). A polished, animated, responsive one-pager: hero with a cursor "liquid-reveal" portrait and a live-analysis metric card, "how it works," features, "why AXL," FAQ, and CTAs routing to the upload flow. All copy is centralized in `constants/landing.ts`.
 
 **Photo intake** (`app/upload/page.tsx`, `components/upload/*`, `hooks/useFileUpload.ts`). Three ways to provide a photo, all converging on one validation path:
 - Drag-and-drop
@@ -143,7 +143,7 @@ The **entire domain/back-of-house layer is portable** and represents the majorit
 **Recommended: React Native + Expo in a shared TypeScript monorepo**, keeping the existing web app and adding a mobile app around a shared core. This maximizes reuse of the parts that matter (the AI contract, schema, report model, auth/DB design) and lets one team ship both platforms.
 
 ```
-alkline/
+axl/
 ├─ packages/
 │  └─ core/          # shared TS: AnalysisResult type, schema+coercion,
 │                    #   Gemini prompt, report model, API client, constants

@@ -20,7 +20,7 @@ export const PROCESS_STEPS: ProcessStep[] = [
     id: "capture",
     title: "Capture",
     description:
-      "Take a single, well-lit selfie — no filters, no special equipment. Alkline only needs a moment of clarity.",
+      "Take a single, well-lit selfie — no filters, no special equipment. AXL only needs a moment of clarity.",
   },
   {
     id: "analyze",
@@ -55,7 +55,7 @@ export const FEATURES: FeatureItem[] = [
     icon: Palette,
     title: "True Undertone Detection",
     description:
-      "Beyond warm or cool — Alkline identifies the subtle calibration of your skin's undertone for exact-match recommendations.",
+      "Beyond warm or cool — AXL identifies the subtle calibration of your skin's undertone for exact-match recommendations.",
   },
   {
     id: "reasoned",
@@ -69,7 +69,7 @@ export const FEATURES: FeatureItem[] = [
     icon: ShieldCheck,
     title: "Private by Design",
     description:
-      "Your image is analyzed, not archived. Alkline was built on the principle that beauty intelligence should never compromise privacy.",
+      "Your image is analyzed, not archived. AXL was built on the principle that beauty intelligence should never compromise privacy.",
   },
 ];
 
@@ -78,7 +78,7 @@ export const DIFFERENTIATORS: DifferentiatorItem[] = [
     id: "consultation",
     title: "A Consultation, Not a Catalogue",
     description:
-      "Alkline doesn't push products. It listens to your features first, the way a trusted beauty consultant would, and recommends only what genuinely suits you.",
+      "AXL doesn't push products. It listens to your features first, the way a trusted beauty consultant would, and recommends only what genuinely suits you.",
   },
   {
     id: "intelligence",
@@ -90,7 +90,7 @@ export const DIFFERENTIATORS: DifferentiatorItem[] = [
     id: "craft",
     title: "Designed Like It Matters",
     description:
-      "From the interface to the interaction, Alkline is crafted with the same care as the beauty houses it draws inspiration from.",
+      "From the interface to the interaction, AXL is crafted with the same care as the beauty houses it draws inspiration from.",
   },
 ];
 
@@ -99,31 +99,31 @@ export const FAQS: FAQItem[] = [
     id: "how-accurate",
     question: "How accurate is the analysis?",
     answer:
-      "Alkline's facial intelligence engine is trained to identify structural and tonal features with a high degree of precision, refined continuously against expert consultation standards.",
+      "AXL's facial intelligence engine is trained to identify structural and tonal features with a high degree of precision, refined continuously against expert consultation standards.",
   },
   {
     id: "data-privacy",
     question: "What happens to my photo?",
     answer:
-      "Your photo is used only to generate your Beauty Profile. Alkline is built to analyze, not to store or share your image.",
+      "Your photo is used only to generate your Beauty Profile. AXL is built to analyze, not to store or share your image.",
   },
   {
     id: "cost",
-    question: "Is Alkline free to use?",
+    question: "Is AXL free to use?",
     answer:
       "Your first Beauty Scan is complimentary. We'll always be transparent before any part of the experience requires payment.",
   },
   {
     id: "skin-tones",
-    question: "Does Alkline work for every skin tone?",
+    question: "Does AXL work for every skin tone?",
     answer:
-      "Yes. Alkline's undertone detection is calibrated across the full spectrum of skin tones, not a narrow band of them.",
+      "Yes. AXL's undertone detection is calibrated across the full spectrum of skin tones, not a narrow band of them.",
   },
   {
     id: "devices",
     question: "What do I need to get started?",
     answer:
-      "Just a phone or computer with a camera. A single clear, well-lit photo is all Alkline needs to begin.",
+      "Just a phone or computer with a camera. A single clear, well-lit photo is all AXL needs to begin.",
   },
 ];
 

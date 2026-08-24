@@ -11,7 +11,6 @@ import {
   solidPillClass,
 } from "@/components/profile/fields";
 import { DobPicker } from "@/components/onboarding/DobPicker";
-import { useOnboarding } from "@/context/OnboardingContext";
 import { useProfile } from "@/context/ProfileContext";
 import { computeAge, validateDob } from "@/lib/onboarding/date";
 import { DEFAULT_DOB, MIN_AGE, MONTHS } from "@/constants/onboarding";
@@ -29,14 +28,13 @@ function sameDob(a: DobValue, b: DobValue): boolean {
 /**
  * Personal details — display name, date of birth, pronouns, and location.
  *
- * Name + DOB are the SAME record captured during onboarding, edited here in
- * place via the onboarding context (single source of truth — never duplicated).
- * Pronouns + location are new profile fields persisted via the profile context.
- * The DOB uses the exact same three-wheel picker as onboarding.
+ * All four fields are part of the profile record (backed by Supabase when
+ * signed in, localStorage otherwise). Name + DOB are seeded from onboarding at
+ * first run, then owned and edited here via the profile context — one source
+ * of truth per field. The DOB uses the same three-wheel picker as onboarding.
  */
 export function PersonalDetailsCard() {
-  const { data: onboarding, setProfile, setDob } = useOnboarding();
-  const { data: profile, updatePersonal } = useProfile();
+  const { data: profile, updatePersonal, updateIdentity } = useProfile();
 
   const [editing, setEditing] = useState(false);
   const [draftName, setDraftName] = useState("");
@@ -44,8 +42,8 @@ export function PersonalDetailsCard() {
   const [draftLocation, setDraftLocation] = useState("");
   const [draftDob, setDraftDob] = useState<DobValue>(DEFAULT_DOB);
 
-  const hadDob = onboarding.dob !== null;
-  const seedDob = onboarding.dob ?? DEFAULT_DOB;
+  const hadDob = profile.dob !== null;
+  const seedDob = profile.dob ?? DEFAULT_DOB;
 
   const dobValidation = useMemo(() => validateDob(draftDob), [draftDob]);
   const dobChanged = !sameDob(draftDob, seedDob);
@@ -67,7 +65,7 @@ export function PersonalDetailsCard() {
   }
 
   const startEdit = () => {
-    setDraftName(onboarding.profile?.displayName ?? "");
+    setDraftName(profile.displayName);
     setDraftPronouns(profile.personal.pronouns);
     setDraftLocation(profile.personal.location);
     setDraftDob(seedDob);
@@ -78,22 +76,24 @@ export function PersonalDetailsCard() {
 
   const save = () => {
     if (saveDisabled) return;
-    const name = draftName.trim();
-    setProfile(name ? { displayName: name } : null);
+    const identityPatch: { displayName: string; dob?: DobValue } = {
+      displayName: draftName.trim(),
+    };
+    // Only persist a DOB the user actually engaged with, and only if valid.
+    if (dobEngaged && dobValidation.valid) {
+      identityPatch.dob = draftDob;
+    }
+    updateIdentity(identityPatch);
     updatePersonal({
       pronouns: draftPronouns.trim(),
       location: draftLocation.trim(),
     });
-    // Only persist a DOB the user actually engaged with, and only if valid.
-    if (dobEngaged && dobValidation.valid) {
-      setDob(draftDob);
-    }
     setEditing(false);
   };
 
-  const displayName = onboarding.profile?.displayName?.trim() ?? "";
-  const dobLabel = onboarding.dob
-    ? `${formatDob(onboarding.dob)} · ${computeAge(onboarding.dob)} yrs`
+  const displayName = profile.displayName.trim();
+  const dobLabel = profile.dob
+    ? `${formatDob(profile.dob)} · ${computeAge(profile.dob)} yrs`
     : "";
 
   const action = editing ? (
@@ -123,7 +123,7 @@ export function PersonalDetailsCard() {
     <ProfileSection
       eyebrow="Personal details"
       title="About you."
-      description="The essentials — kept on your device, edited anytime."
+      description="The essentials — saved to your profile, edited anytime."
       action={action}
     >
       {editing ? (

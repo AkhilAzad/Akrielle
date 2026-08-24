@@ -15,4 +15,4 @@ export const MAX_FILE_SIZE_LABEL = "10MB";
 export const MIN_IMAGE_DIMENSION = 200;
 
 export const PRIVACY_NOTICE =
-  "Your image is analyzed securely and never stored permanently.";
+  "Your image is analyzed securely and isn't stored unless you're signed in and choose to save it.";

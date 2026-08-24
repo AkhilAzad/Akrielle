@@ -151,7 +151,7 @@ export default function ResultsPage() {
       label: "Face Shape",
       value: result.faceShape,
       confidence: confidencePercent,
-      explanation: `Alkline reads your face shape as ${result.faceShape.toLowerCase()}.`,
+      explanation: `AXL reads your face shape as ${result.faceShape.toLowerCase()}.`,
     },
     {
       id: "skin-tone",
@@ -298,7 +298,7 @@ export default function ResultsPage() {
             <SectionHeading
               eyebrow="Step 3 of 3"
               title="Your Beauty Profile."
-              description="Here is what Alkline discovered about your unique features — and what genuinely suits them."
+              description="Here is what AXL discovered about your unique features — and what genuinely suits them."
               align="center"
               className="items-center"
             />
@@ -327,7 +327,7 @@ export default function ResultsPage() {
           <section aria-labelledby="beauty-profile-heading">
             <SectionHeading
               eyebrow="Beauty Profile"
-              title="What Alkline detected."
+              title="What AXL detected."
               description="Six readings from your photo, each with its own confidence level."
             />
 
@@ -359,7 +359,7 @@ export default function ResultsPage() {
               <SectionHeading
                 eyebrow="Highest Impact Improvements"
                 title="Where to focus first."
-                description="Ranked from highest to lowest impact, based on what Alkline actually sees in your photo."
+                description="Ranked from highest to lowest impact, based on what AXL actually sees in your photo."
               />
 
               <div className="mt-12">

@@ -15,7 +15,7 @@ interface ToggleSwitchProps {
 
 /**
  * An accessible on/off switch built on a native button with role="switch".
- * Styled in the Alkline vocabulary — accent track when on, hairline surface
+ * Styled in the AXL vocabulary — accent track when on, hairline surface
  * track when off. Used for app/privacy preferences (e.g. "save photos").
  */
 export function ToggleSwitch({

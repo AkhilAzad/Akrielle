@@ -18,7 +18,7 @@ export function WhyAlkline() {
         <div className="flex flex-col gap-7 md:sticky md:top-32 md:self-start">
           <span className="eyebrow reveal-up">
             <span className="eyebrow-dot" aria-hidden="true" />
-            Why Alkline
+            Why AXL
           </span>
 
           <h2 className="max-w-[14ch] text-3xl font-medium leading-[1.08] tracking-tightest text-ink md:text-[2.75rem]">
@@ -35,7 +35,7 @@ export function WhyAlkline() {
             className="reveal-up max-w-sm text-[0.975rem] leading-relaxed text-ink-muted"
             data-delay="120"
           >
-            Three principles shape everything Alkline does — and set it apart
+            Three principles shape everything AXL does — and set it apart
             from the beauty tools you already know.
           </p>
         </div>

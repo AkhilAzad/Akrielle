@@ -139,7 +139,7 @@ function SignInInner() {
             transition={{ duration: 0.6, ease: easing }}
           >
             <SectionHeading
-              eyebrow="Your Alkline account"
+              eyebrow="Your AXL account"
               title={isSignIn ? "Welcome back." : "Create your account."}
               description={
                 isSignIn
@@ -255,7 +255,7 @@ function SignInInner() {
               transition={{ duration: 0.6, delay: 0.25 }}
               className="mt-6 text-sm text-ink-muted"
             >
-              {isSignIn ? "New to Alkline? " : "Already have an account? "}
+              {isSignIn ? "New to AXL? " : "Already have an account? "}
               <button
                 type="button"
                 onClick={() => switchMode(isSignIn ? "signup" : "signin")}

@@ -4,9 +4,9 @@ import Link from "next/link";
 import { LegalLayout, LegalSection } from "@/components/legal/LegalLayout";
 
 export const metadata: Metadata = {
-  title: "Terms of Service · Alkline",
+  title: "Terms of Service · AXL",
   description:
-    "The terms that govern your use of Alkline's AI beauty analysis.",
+    "The terms that govern your use of AXL's AI beauty analysis.",
 };
 
 export default function TermsPage() {
@@ -14,12 +14,12 @@ export default function TermsPage() {
     <LegalLayout
       eyebrow="Legal"
       title="Terms of Service"
-      intro="These terms govern your use of Alkline. By using the service, you agree to them."
+      intro="These terms govern your use of AXL. By using the service, you agree to them."
       lastUpdated="August 21, 2026"
     >
-      <LegalSection title="What Alkline is">
+      <LegalSection title="What AXL is">
         <p>
-          Alkline provides an AI-generated reading of a photo you supply,
+          AXL provides an AI-generated reading of a photo you supply,
           returning a cosmetic beauty profile, recommendations, and a score. It
           is an informational and entertainment tool designed to help you
           explore styling and grooming choices.
@@ -28,7 +28,7 @@ export default function TermsPage() {
 
       <LegalSection title="Not professional advice">
         <p>
-          Alkline is <strong>not</strong> a medical, dermatological, or
+          AXL is <strong>not</strong> a medical, dermatological, or
           psychological service. Its output is a cosmetic estimate produced by
           an AI model and should not be relied upon as professional advice or as
           an objective measure of your appearance, health, or worth. Always
@@ -49,7 +49,7 @@ export default function TermsPage() {
         <p>
           You agree to upload only photos of yourself, or images you have the
           right to use with the consent of the person shown. You must not use
-          Alkline to analyze images of others without permission, to harass or
+          AXL to analyze images of others without permission, to harass or
           demean anyone, or for any unlawful purpose. You should be at least 18,
           or have the consent of a parent or guardian.
         </p>
@@ -65,7 +65,7 @@ export default function TermsPage() {
 
       <LegalSection title="Intellectual property">
         <p>
-          The Alkline name, interface, and generated report design are ours. The
+          The AXL name, interface, and generated report design are ours. The
           analysis produced for your photo is provided to you for your personal,
           non-commercial use.
         </p>
@@ -73,7 +73,7 @@ export default function TermsPage() {
 
       <LegalSection title="Disclaimer &amp; limitation of liability">
         <p>
-          Alkline is provided &ldquo;as is,&rdquo; without warranties of any
+          AXL is provided &ldquo;as is,&rdquo; without warranties of any
           kind. To the fullest extent permitted by law, we are not liable for
           any indirect, incidental, or consequential damages arising from your
           use of the service or reliance on its output.
@@ -82,7 +82,7 @@ export default function TermsPage() {
 
       <LegalSection title="Changes to these terms">
         <p>
-          We may update these terms from time to time. Continued use of Alkline
+          We may update these terms from time to time. Continued use of AXL
           after changes take effect constitutes acceptance of the revised terms.
         </p>
       </LegalSection>

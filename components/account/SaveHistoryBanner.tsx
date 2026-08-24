@@ -8,6 +8,9 @@ import { Check, Loader2, BookmarkPlus, ArrowRight } from "lucide-react";
 import { Button } from "@/components/common/Button";
 import { useAuth } from "@/context/AuthContext";
 import { useAnalysisResult } from "@/context/AnalysisResultContext";
+import { useImage } from "@/context/ImageContext";
+import { useProfile } from "@/context/ProfileContext";
+import { downscaleToBlob } from "@/lib/media/image";
 import { cn } from "@/lib/utils";
 
 const easing = [0.22, 1, 0.36, 1] as const;
@@ -27,18 +30,42 @@ const SIGN_IN_HREF = `/signin?next=${encodeURIComponent("/results")}`;
 export function SaveHistoryBanner() {
   const { status, configured, saveCurrentAnalysis } = useAuth();
   const { result, persisted, markPersisted } = useAnalysisResult();
+  const { image } = useImage();
+  const { data: profile, hydrated: profileHydrated } = useProfile();
   const savingRef = useRef(false);
   // Bumped after a transient save failure to re-trigger the effect and retry.
   const [attempt, setAttempt] = useState(0);
 
+  // The opt-in decision. Gating the save on profileHydrated ensures this is the
+  // user's settled preference (not the pre-hydration default), so it can't flip
+  // mid-save and interrupt an in-flight upload.
+  const savePhotos = profile.app.savePhotos;
+
   useEffect(() => {
     if (!configured || !result || persisted) return;
     if (status !== "signed-in") return;
+    // Wait until the profile has loaded so the savePhotos preference is final.
+    if (!profileHydrated) return;
     if (savingRef.current) return;
     savingRef.current = true;
     let cancelled = false;
     let retryTimer: ReturnType<typeof setTimeout> | undefined;
-    void saveCurrentAnalysis(result).then((saved) => {
+
+    void (async () => {
+      // Opt-in: attach the scan photo only when "save photos" is on and we
+      // still hold the in-session image. A downscale hiccup must never block
+      // the history save, so failures fall back to saving without the photo.
+      let imageBlob: Blob | null = null;
+      if (savePhotos && image) {
+        try {
+          imageBlob = await downscaleToBlob(image);
+        } catch {
+          imageBlob = null;
+        }
+      }
+      if (cancelled) return;
+
+      const saved = await saveCurrentAnalysis(result, { imageBlob });
       if (cancelled) return;
       savingRef.current = false;
       if (saved) {
@@ -49,7 +76,8 @@ export function SaveHistoryBanner() {
         // save or leave the banner spinning forever.
         retryTimer = setTimeout(() => setAttempt((n) => n + 1), 4000);
       }
-    });
+    })();
+
     return () => {
       cancelled = true;
       if (retryTimer) clearTimeout(retryTimer);
@@ -59,6 +87,9 @@ export function SaveHistoryBanner() {
     result,
     persisted,
     status,
+    profileHydrated,
+    savePhotos,
+    image,
     saveCurrentAnalysis,
     markPersisted,
     attempt,

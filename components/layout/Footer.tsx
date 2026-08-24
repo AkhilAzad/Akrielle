@@ -20,7 +20,7 @@ const FOOTER_LINKS = [
   {
     heading: "Company",
     links: [
-      { label: "Why Alkline", href: "#why-alkline" },
+      { label: "Why AXL", href: "#why-alkline" },
       { label: "Contact", href: "/contact" },
     ],
   },

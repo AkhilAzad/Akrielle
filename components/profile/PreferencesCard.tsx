@@ -128,8 +128,8 @@ export function PreferencesCard() {
         <ToggleSwitch
           checked={app.savePhotos}
           onChange={(v) => updateApp({ savePhotos: v })}
-          label="Save photos to this device"
-          description="Keep recent photos in your local portfolio. Turning this off won't remove photos you've already saved."
+          label="Save my photos"
+          description="When on, your scan and portfolio photos are kept so you can revisit them — stored privately in your account when you're signed in, and only on this device when you're not. Turning this off won't remove photos you've already saved."
         />
       </div>
     </ProfileSection>

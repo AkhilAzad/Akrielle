@@ -1,6 +1,6 @@
-# Supabase setup — Alkline accounts & history
+# Supabase setup — AXL accounts & history
 
-This guide connects Alkline to a Supabase project so visitors can create an
+This guide connects AXL to a Supabase project so visitors can create an
 account and keep a private history of their beauty analyses.
 
 **You only need to do this once.** Until it's done, the app runs perfectly in
@@ -8,15 +8,22 @@ account and keep a private history of their beauty analyses.
 thing missing is sign-in and saved history. The app detects whether Supabase
 is configured and hides all the account UI automatically when it isn't.
 
-**Privacy note:** only the analysis *result* and score are ever stored — never
-the uploaded photo.
+**Privacy note:** anonymous scanning stores nothing at all. For signed-in
+users, the analysis *result* and score are always saved; the scan photo is kept
+only while the **Save my photos** switch is on (it's on by default and can be
+turned off on the profile page). Any saved images — scan photos, portfolio
+photos, avatars — live in a *private* Storage bucket, reachable only by their
+owner through short-lived signed URLs.
 
 ---
 
 ## What you'll end up with
 
-- A `analyses` table locked down with row-level security (each user sees only
-  their own rows).
+- An `analyses` table (saved scans), a `profiles` table (profile + preferences),
+  and a `portfolio_items` table (private gallery) — each locked down with
+  row-level security so every user sees only their own rows.
+- A private `user-media` Storage bucket for saved images, with policies that
+  confine each user to their own folder.
 - Email + password sign-in, and "Continue with Google".
 - Two values pasted into `.env.local`.
 
@@ -28,21 +35,24 @@ There is no service-role key anywhere in the codebase.
 ## Step 1 — Create a Supabase project
 
 1. Go to <https://supabase.com/dashboard> and sign in.
-2. Click **New project**. Pick a name (e.g. `alkline`), a strong database
+2. Click **New project**. Pick a name (e.g. `axl`), a strong database
    password, and a region close to your users.
 3. Wait ~2 minutes for it to finish provisioning.
 
-## Step 2 — Create the table + security policies
+## Step 2 — Create the tables + security policies
 
 1. In your project, open **SQL Editor** (left sidebar) → **New query**.
 2. Open `supabase/schema.sql` from this repo, copy its entire contents, paste
    into the editor, and click **Run**.
-3. You should see "Success. No rows returned." That created the `analyses`
-   table, its index, and three row-level-security policies (read / insert /
-   delete your own rows only).
+3. You should see "Success. No rows returned." That created the `analyses`,
+   `profiles`, and `portfolio_items` tables with their indexes and row-level-
+   security policies (read / insert / delete — plus update for `profiles` —
+   your own rows only), and the private `user-media` Storage bucket with
+   per-user access policies. The script is idempotent, so it's safe to re-run.
 
-You can confirm it worked under **Table Editor** → `analyses`, and under
-**Authentication → Policies** (you'll see the three policies listed).
+You can confirm it worked under **Table Editor** (you'll see the three tables),
+under **Authentication → Policies**, and under **Storage** (a `user-media`
+bucket marked private).
 
 ## Step 3 — Copy your API credentials into `.env.local`
 
@@ -137,8 +147,9 @@ This has two halves — a Google side and a Supabase side.
   and the app's own URL (`.../auth/callback`) must be listed under Supabase
   **Redirect URLs** (Step 4).
 - **Signed in, but history is always empty / saves fail.** Make sure the
-  Step 2 SQL actually ran (Table Editor shows an `analyses` table with RLS
-  enabled and three policies).
+  Step 2 SQL actually ran (Table Editor shows the `analyses`, `profiles`, and
+  `portfolio_items` tables with RLS enabled, and Storage shows a `user-media`
+  bucket).
 - **"Check your email" after signing up and nothing else happens.** Email
   confirmation is on (Step 5). Confirm via the email, or turn confirmation off
   for development.

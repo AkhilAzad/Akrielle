@@ -10,7 +10,7 @@ import { ConnectorLines } from "@/components/landing/hero/ConnectorLines";
 import { MetricChip } from "@/components/landing/hero/MetricChip";
 
 /**
- * Alkline's signature hero visual — a cinematic AI face-scan of a
+ * AXL's signature hero visual — a cinematic AI face-scan of a
  * large, semi-transparent ivory/glass bust. Layout/composition is
  * unchanged from before (same grid position, same floating readout
  * cards); this pass enlarges the instrument, gives the sculpture a
@@ -39,7 +39,7 @@ export function HeroVisual() {
       animate={shouldReduceMotion ? undefined : { scale: [1, 1.012, 1] }}
       transition={shouldReduceMotion ? undefined : { duration: 7, repeat: Infinity, ease: "easeInOut" }}
       role="img"
-      aria-label="Animated illustration of Alkline's AI facial analysis: a rotating scan of a glass bust identifying face shape, undertone, eye shape, skin tone, and symmetry"
+      aria-label="Animated illustration of AXL's AI facial analysis: a rotating scan of a glass bust identifying face shape, undertone, eye shape, skin tone, and symmetry"
     >
       {/* Pedestal glow — a soft ellipse of light beneath the bust so
           it reads as a sculpture on display rather than a flat

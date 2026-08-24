@@ -87,7 +87,7 @@ function buildFineMesh(): { points: MeshPoint[]; edges: Array<[MeshPoint, MeshPo
 const FINE_MESH = buildFineMesh();
 
 /**
- * Alkline's signature visual: a large, semi-transparent ivory/glass
+ * AXL's signature visual: a large, semi-transparent ivory/glass
  * bust — gender-neutral, serene, sculptural — with a gold analysis
  * wireframe reading over it. Volume is faked with layered gradients
  * (a warm front glow, an offset shadow, a single rim highlight) since

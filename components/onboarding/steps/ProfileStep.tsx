@@ -42,7 +42,7 @@ export function ProfileStep({
       <SectionHeading
         eyebrow="Profile"
         title="What should we call you?"
-        description="This is how Alkline will greet you. You can change it anytime."
+        description="This is how AXL will greet you. You can change it anytime."
         align="center"
         className="items-center"
       />

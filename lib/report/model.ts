@@ -66,7 +66,7 @@ export function buildReportModel(result: AnalysisResult): ReportModel {
         label: "Face Shape",
         value: result.faceShape,
         confidence,
-        explanation: `Alkline reads your face shape as ${lower(result.faceShape)}.`,
+        explanation: `AXL reads your face shape as ${lower(result.faceShape)}.`,
       },
       {
         label: "Skin Tone",

@@ -18,7 +18,7 @@ export function AnalysisVisual() {
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       className="relative mx-auto aspect-square w-full max-w-[220px]"
       role="img"
-      aria-label="Alkline analyzing your photo"
+      aria-label="AXL analyzing your photo"
     >
       <motion.div
         className="absolute inset-0 rounded-full border border-gold/25"

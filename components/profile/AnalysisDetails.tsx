@@ -53,7 +53,7 @@ export function AnalysisDetails({ latest }: AnalysisDetailsProps) {
       label: "Face Shape",
       value: latest.faceShape,
       confidence: confidencePercent,
-      explanation: `Alkline reads your face shape as ${latest.faceShape.toLowerCase()}.`,
+      explanation: `AXL reads your face shape as ${latest.faceShape.toLowerCase()}.`,
     },
     {
       id: "skin-tone",
@@ -130,7 +130,7 @@ export function AnalysisDetails({ latest }: AnalysisDetailsProps) {
       <section aria-labelledby="profile-readings-heading">
         <SectionHeading
           eyebrow="Key readings"
-          title="What Alkline detected."
+          title="What AXL detected."
           description="The core of your beauty profile, each with its own confidence level."
         />
         <motion.div
@@ -152,7 +152,7 @@ export function AnalysisDetails({ latest }: AnalysisDetailsProps) {
           <SectionHeading
             eyebrow="Observations"
             title="Where to focus first."
-            description="Your highest-impact areas, ranked from what Alkline actually sees in your photo."
+            description="Your highest-impact areas, ranked from what AXL actually sees in your photo."
           />
           <div className="mt-12">
             <ImpactImprovementList items={observations} />

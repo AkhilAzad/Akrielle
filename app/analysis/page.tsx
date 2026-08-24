@@ -257,7 +257,7 @@ export default function AnalysisPage() {
             <SectionHeading
               eyebrow="Step 2 of 3"
               title="Reading your features."
-              description="Alkline is analyzing your photo. This takes just a few quiet moments."
+              description="AXL is analyzing your photo. This takes just a few quiet moments."
               align="center"
               className="items-center"
             />

@@ -20,7 +20,7 @@ export function formatBytes(bytes: number): string {
 }
 
 /**
- * Validates a File against Alkline's accepted formats and size limit.
+ * Validates a File against AXL's accepted formats and size limit.
  * Returns null when the file is valid, or a descriptive UploadError.
  */
 export function validateImageFile(file: File): UploadError | null {

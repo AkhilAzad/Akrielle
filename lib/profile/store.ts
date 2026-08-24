@@ -6,6 +6,7 @@ import type {
   ProfileData,
   ProfilePersonal,
 } from "@/types/profile";
+import type { DobValue } from "@/types/onboarding";
 
 /**
  * Dependency-free, SSR-safe persistence for the profile-dashboard record.
@@ -14,6 +15,10 @@ import type {
  * `window`/`localStorage` and never throws, so a private-mode browser or a
  * disabled storage API simply behaves like an empty profile rather than
  * crashing the page.
+ *
+ * `coerceProfileData` is shared with the Supabase layer (lib/supabase/profileDb)
+ * so a row read from the cloud is repaired into the exact same shape and
+ * defaults as a record read from localStorage.
  */
 
 /** Coerce an unknown value to a trimmed string, or "" as the "unset" default. */
@@ -25,6 +30,20 @@ function str(value: unknown): string {
 function strArray(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   return value.filter((v): v is string => typeof v === "string");
+}
+
+function isFiniteInt(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+/** Narrow an unknown blob to a DobValue, or null if it isn't one. */
+function coerceDob(raw: unknown): DobValue | null {
+  if (!raw || typeof raw !== "object") return null;
+  const { day, month, year } = raw as Record<string, unknown>;
+  if (!isFiniteInt(day) || !isFiniteInt(month) || !isFiniteInt(year)) {
+    return null;
+  }
+  return { day, month, year };
 }
 
 function coercePersonal(raw: unknown): ProfilePersonal {
@@ -57,10 +76,12 @@ function coerceApp(raw: unknown): AppPreferences {
 }
 
 /** Repair any stored value into a valid ProfileData (never rejects). */
-function coerceProfile(raw: unknown): ProfileData {
+export function coerceProfileData(raw: unknown): ProfileData {
   if (!raw || typeof raw !== "object") return { ...EMPTY_PROFILE };
   const record = raw as Record<string, unknown>;
   return {
+    displayName: str(record.displayName),
+    dob: coerceDob(record.dob),
     personal: coercePersonal(record.personal),
     appearance: coerceAppearance(record.appearance),
     beauty: coerceBeauty(record.beauty),
@@ -75,7 +96,7 @@ export function loadProfile(): ProfileData {
   try {
     const raw = window.localStorage.getItem(PROFILE_STORAGE_KEY);
     if (!raw) return { ...EMPTY_PROFILE };
-    return coerceProfile(JSON.parse(raw) as unknown);
+    return coerceProfileData(JSON.parse(raw) as unknown);
   } catch {
     return { ...EMPTY_PROFILE };
   }

@@ -28,12 +28,12 @@ const onest = Onest({
 });
 
 export const metadata: Metadata = {
-  title: "Alkline — Beauty, Understood by Intelligence.",
+  title: "AXL — Beauty, Understood by Intelligence.",
   description:
-    "Alkline is an AI Beauty Intelligence Platform. One photo, and a premium, private facial analysis returns a personalized beauty profile.",
+    "AXL is an AI Beauty Intelligence Platform. One photo, and a premium, private facial analysis returns a personalized beauty profile.",
   metadataBase: new URL("https://alkline.com"),
   openGraph: {
-    title: "Alkline — Beauty, Understood by Intelligence.",
+    title: "AXL — Beauty, Understood by Intelligence.",
     description:
       "One photo. AI-powered facial analysis with personalized beauty recommendations.",
     type: "website",

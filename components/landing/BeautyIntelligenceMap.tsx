@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useMouseParallax } from "@/hooks/useMouseParallax";
 
 /**
- * The Beauty Intelligence Map — Alkline's signature visual.
+ * The Beauty Intelligence Map — AXL's signature visual.
  *
  * An abstracted, calm facial silhouette annotated the way a
  * consultant's notebook would be: thin burnt-orange guide lines, quiet
@@ -29,7 +29,7 @@ export function BeautyIntelligenceMap() {
       className="relative mx-auto aspect-[4/5] w-full max-w-[420px]"
       style={shouldReduceMotion ? undefined : { rotateX, rotateY, transformPerspective: 900 }}
       role="img"
-      aria-label="Illustration of Alkline's facial analysis identifying face shape, undertone, eye shape, and skin tone"
+      aria-label="Illustration of AXL's facial analysis identifying face shape, undertone, eye shape, and skin tone"
     >
       {/* Ambient rotating ring — the only "instrument" motif, kept extremely slow and quiet */}
       <motion.div

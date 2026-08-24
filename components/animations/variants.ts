@@ -1,7 +1,7 @@
 import type { Transition, Variants } from "framer-motion";
 
 /**
- * Alkline Motion System
+ * AXL Motion System
  * ------------------------------------------------------------------
  * A single shared vocabulary for easing, timing, and choreography so
  * every section, card, and control moves with the same "hand." Values

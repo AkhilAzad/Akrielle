@@ -1,7 +1,7 @@
 import type { NavLink } from "@/types/landing";
 
 export const SITE = {
-  name: "Alkline",
+  name: "AXL",
   tagline: "Beauty, Understood by Intelligence.",
   description:
     "An AI Beauty Intelligence Platform — one photo returns a premium, private facial analysis with personalized beauty recommendations.",
@@ -10,7 +10,7 @@ export const SITE = {
 export const NAV_LINKS: NavLink[] = [
   { label: "How It Works", href: "#how-it-works" },
   { label: "Features", href: "#features" },
-  { label: "Why Alkline", href: "#why-alkline" },
+  { label: "Why AXL", href: "#why-alkline" },
   { label: "FAQ", href: "#faq" },
   { label: "Profile", href: "/profile" },
 ];

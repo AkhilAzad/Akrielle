@@ -2,7 +2,7 @@
 
 _Last reviewed: 2026-08-21_
 
-This document describes exactly where Alkline stands on payments, and the
+This document describes exactly where AXL stands on payments, and the
 precise steps required to turn on a paywall later. It exists because the
 functional audit found **no payment code in the repository** — payments are
 greenfield. Nothing here has been faked or stubbed with credentials.

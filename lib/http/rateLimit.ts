@@ -5,7 +5,7 @@
  * cold start and is NOT shared across multiple server instances (each
  * serverless instance keeps its own window). This is an intentional,
  * zero-dependency baseline safeguard against accidental hammering and
- * casual abuse — not a distributed quota. If Alkline later needs a hard,
+ * casual abuse — not a distributed quota. If AXL later needs a hard,
  * cross-instance limit, back this with a shared store (e.g. the Supabase
  * Postgres planned for persistence, or Upstash Redis).
  */

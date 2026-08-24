@@ -73,12 +73,26 @@ export interface AuthContextValue {
   /** Finish an OAuth redirect by parsing the URL hash and storing the session. */
   completeOAuth: (hash: string) => Promise<{ ok: boolean; message?: string }>;
 
-  /** Persist a completed analysis. Returns null if not signed in / on failure. */
-  saveCurrentAnalysis: (result: AnalysisResult) => Promise<SavedAnalysis | null>;
+  /**
+   * Persist a completed analysis. Returns null if not signed in / on failure.
+   * Pass `opts.imageBlob` to also store the scan photo (opt-in) — the user id
+   * is supplied internally from the active session.
+   */
+  saveCurrentAnalysis: (
+    result: AnalysisResult,
+    opts?: { imageBlob?: Blob | null }
+  ) => Promise<SavedAnalysis | null>;
   /** List the signed-in user's saved analyses, newest first. */
   listHistory: () => Promise<SavedAnalysis[]>;
   /** Delete one saved analysis. Returns false if not signed in / on failure. */
   removeHistory: (id: string) => Promise<boolean>;
+
+  /**
+   * Return a currently-valid access token (refreshing first if needed), or
+   * null when signed out. Lets other providers (profile, portfolio) make their
+   * own authenticated Supabase calls without duplicating session management.
+   */
+  getToken: () => Promise<string | null>;
 }
 
 export interface AuthProviderProps {
@@ -280,10 +294,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   );
 
   const saveCurrentAnalysis = useCallback(
-    async (result: AnalysisResult): Promise<SavedAnalysis | null> => {
+    async (
+      result: AnalysisResult,
+      opts?: { imageBlob?: Blob | null }
+    ): Promise<SavedAnalysis | null> => {
       const token = await getValidToken();
       if (!token) return null;
-      return saveAnalysis(token, result);
+      return saveAnalysis(token, result, {
+        imageBlob: opts?.imageBlob ?? null,
+        userId: sessionRef.current?.user.id ?? null,
+      });
     },
     [getValidToken]
   );
@@ -316,6 +336,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       saveCurrentAnalysis,
       listHistory,
       removeHistory,
+      getToken: getValidToken,
     }),
     [
       user,
@@ -328,6 +349,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       saveCurrentAnalysis,
       listHistory,
       removeHistory,
+      getValidToken,
     ]
   );
 

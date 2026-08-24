@@ -71,7 +71,7 @@ export default function UploadPage() {
             <SectionHeading
               eyebrow="Step 1 of 3"
               title="Upload your photo."
-              description="A single, well-lit photo is all Alkline needs to begin your beauty analysis."
+              description="A single, well-lit photo is all AXL needs to begin your beauty analysis."
               align="center"
               className="items-center"
             />

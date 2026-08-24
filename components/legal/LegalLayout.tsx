@@ -8,7 +8,7 @@ import { Container } from "@/components/common/Container";
  * Shared shell for the site's content/legal routes (Privacy, Terms, Contact).
  * Reuses the existing Lumora primitives — the flow header for back-navigation,
  * the same closing footer as the landing page, and the site's ink/paper type
- * system — so these pages read as part of Alkline rather than a bolted-on
+ * system — so these pages read as part of AXL rather than a bolted-on
  * template. No new visual language is introduced here.
  */
 export function LegalLayout({

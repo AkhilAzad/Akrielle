@@ -12,6 +12,8 @@ export const PORTFOLIO_STORAGE_KEY = "alkline.portfolio.v1";
 
 /** The empty starting record (also the SSR / pre-hydration default). */
 export const EMPTY_PROFILE: ProfileData = {
+  displayName: "",
+  dob: null,
   personal: { pronouns: "", location: "" },
   appearance: { hairColor: "", eyeColor: "", skinType: "" },
   beauty: { styleVibe: "", focusAreas: [], skinConcerns: [] },
