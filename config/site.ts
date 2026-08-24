@@ -12,6 +12,7 @@ export const NAV_LINKS: NavLink[] = [
   { label: "Features", href: "#features" },
   { label: "Why Alkline", href: "#why-alkline" },
   { label: "FAQ", href: "#faq" },
+  { label: "Profile", href: "/profile" },
 ];
 
 export const PRIMARY_CTA_LABEL = "Start Your Beauty Scan";

@@ -98,19 +98,31 @@ export function Navbar() {
           </a>
 
           <nav className="hidden items-center gap-9 md:flex" aria-label="Primary">
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="group relative font-body text-sm text-ink-muted transition-colors duration-300 hover:text-ink"
-              >
-                {link.label}
-                <span
-                  className="absolute -bottom-1 left-0 h-px w-0 bg-accent transition-all duration-300 ease-signature group-hover:w-full"
-                  aria-hidden="true"
-                />
-              </a>
-            ))}
+            {NAV_LINKS.map((link) => {
+              const linkClass =
+                "group relative font-body text-sm text-ink-muted transition-colors duration-300 hover:text-ink";
+              const inner = (
+                <>
+                  {link.label}
+                  <span
+                    className="absolute -bottom-1 left-0 h-px w-0 bg-accent transition-all duration-300 ease-signature group-hover:w-full"
+                    aria-hidden="true"
+                  />
+                </>
+              );
+              // In-page anchors keep native <a> for smooth scrolling; real
+              // routes use <Link> so navigation stays client-side (and keeps
+              // the app's page transitions) like everywhere else.
+              return link.href.startsWith("/") ? (
+                <Link key={link.href} href={link.href} className={linkClass}>
+                  {inner}
+                </Link>
+              ) : (
+                <a key={link.href} href={link.href} className={linkClass}>
+                  {inner}
+                </a>
+              );
+            })}
           </nav>
 
           <div className="flex items-center gap-5">
