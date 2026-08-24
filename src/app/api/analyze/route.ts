@@ -1,15 +1,6 @@
 import { NextResponse } from "next/server";
-import { ANALYSIS_PROMPT } from "@/backend/ai/prompt";
-import {
-  coerceAnalysisResult,
-  extractJsonObject,
-} from "@/backend/ai/schema";
 import { clientIp, rateLimit } from "@/backend/api/rateLimit";
-import {
-  ACCEPTED_FILE_TYPES,
-  MAX_FILE_SIZE_BYTES,
-  MAX_FILE_SIZE_LABEL,
-} from "@/constants/upload";
+import { analyzeImage } from "@/backend/services/analysisService";
 import type { AnalyzeErrorBody, AnalyzeErrorCode } from "@/types/analyze";
 
 export const runtime = "nodejs";
@@ -71,151 +62,13 @@ export async function POST(req: Request) {
     );
   }
 
-  // 3. Validate image
-  if (image.size === 0) {
-    return fail(
-      "empty-file",
-      "That file appears to be empty. Please choose another photo.",
-      400
-    );
+  // 3. Validate the image, run the AI analysis, and coerce to the app schema.
+  const outcome = await analyzeImage(image);
+
+  if (!outcome.ok) {
+    return fail(outcome.code, outcome.message, outcome.status);
   }
 
-  if (!(ACCEPTED_FILE_TYPES as readonly string[]).includes(image.type)) {
-    return fail(
-      "invalid-type",
-      "Please upload a JPG, PNG, or WEBP image.",
-      400
-    );
-  }
-
-  if (image.size > MAX_FILE_SIZE_BYTES) {
-    return fail(
-      "too-large",
-      `That image is larger than ${MAX_FILE_SIZE_LABEL}. Please choose a smaller file.`,
-      400
-    );
-  }
-
-  // 4. Convert image to base64
-  const bytes = await image.arrayBuffer();
-  const base64 = Buffer.from(bytes).toString("base64");
-
-  // 5. Gemini API key
-  const apiKey = process.env.GEMINI_API_KEY;
-
-  if (!apiKey) {
-    console.error("GEMINI_API_KEY is missing.");
-
-    return fail(
-      "analysis-failed",
-      "The AI analysis service is not configured.",
-      500
-    );
-  }
-
-  // 6. Gemini request
-  try {
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${encodeURIComponent(
-        apiKey
-      )}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              role: "user",
-              parts: [
-                {
-                  text: ANALYSIS_PROMPT,
-                },
-                {
-                  inlineData: {
-                    mimeType: image.type,
-                    data: base64,
-                  },
-                },
-              ],
-            },
-          ],
-          generationConfig: {
-            responseMimeType: "application/json",
-          },
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      const errorText = await response.text();
-
-      console.error("Gemini API error:", response.status, errorText);
-
-      return fail(
-        "analysis-failed",
-        "The AI analysis service could not process your photo. Please try again.",
-        502
-      );
-    }
-
-    const data = await response.json();
-
-    // 7. Extract Gemini text response
-    const raw =
-      data?.candidates?.[0]?.content?.parts
-        ?.map((part: { text?: string }) => part.text ?? "")
-        .join("")
-        .trim() ?? "";
-
-    if (!raw) {
-      console.error("Gemini returned no text:", data);
-
-      return fail(
-        "model-unreadable",
-        "The analysis came back empty. Please try again.",
-        502
-      );
-    }
-
-    console.log("Gemini analysis received successfully.");
-
-    // 8. Parse JSON
-    const parsed = extractJsonObject(raw);
-
-    if (parsed === null) {
-      console.error("Could not extract JSON from Gemini response:", raw);
-
-      return fail(
-        "model-unreadable",
-        "We couldn't read the analysis result. Please try again.",
-        502
-      );
-    }
-
-    // 9. Validate/coerce existing application schema
-    const outcome = coerceAnalysisResult(parsed);
-
-    if (!outcome.ok) {
-      console.error("Gemini result failed schema validation:", parsed);
-
-      return fail(
-        "model-invalid",
-        "The analysis result was incomplete. Please try again.",
-        502
-      );
-    }
-
-    // 10. Return exactly the format your frontend already expects
-    return NextResponse.json(outcome.data);
-  } catch (error) {
-    console.error("Analysis failed:", error);
-
-    return fail(
-      "analysis-failed",
-      "Failed to analyze image. Please try again.",
-      500
-    );
-  }
+  // 4. Return exactly the format the frontend already expects.
+  return NextResponse.json(outcome.data);
 }
