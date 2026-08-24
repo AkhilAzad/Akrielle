@@ -13,11 +13,20 @@ import { UploadCard } from "@/components/upload/UploadCard";
 import { PrivacyNotice } from "@/components/upload/PrivacyNotice";
 import { useImage } from "@/context/ImageContext";
 import { useOnboarding } from "@/context/OnboardingContext";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import type { SelectedImage } from "@/types/upload";
  
 const easing = [0.22, 1, 0.36, 1] as const;
  
 export default function UploadPage() {
+  return (
+    <RequireAuth>
+      <UploadPageContent />
+    </RequireAuth>
+  );
+}
+
+function UploadPageContent() {
   const router = useRouter();
   const { image, setImage } = useImage();
   const { hydrated, hasCompleted } = useOnboarding();

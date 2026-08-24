@@ -28,6 +28,7 @@ import { GlowUpPotentialCard } from "@/components/results/GlowUpPotentialCard";
 import { ImpactImprovementList } from "@/components/results/ImpactImprovementList";
 import { FacialAnalysisGrid } from "@/components/results/FacialAnalysisGrid";
 import { SaveHistoryBanner } from "@/components/account/SaveHistoryBanner";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import { useAnalysisResult } from "@/context/AnalysisResultContext";
 import { getFacialFeatureIcon, getImpactAreaIcon } from "@/utils/resultIcons";
 
@@ -43,6 +44,14 @@ import type {
 const easing = [0.22, 1, 0.36, 1] as const;
 
 export default function ResultsPage() {
+  return (
+    <RequireAuth>
+      <ResultsPageContent />
+    </RequireAuth>
+  );
+}
+
+function ResultsPageContent() {
   const { result, restoring } = useAnalysisResult();
 
   /*

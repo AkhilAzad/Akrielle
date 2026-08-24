@@ -102,10 +102,12 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({
         modeRef.current = "cloud";
         const token = await getToken();
         if (!token) {
-          // Momentarily can't reach the cloud — show the local record as a soft
-          // fallback so the page isn't blank; a later render will reconcile.
+          // Momentarily can't reach the cloud (a transient token-refresh blip).
+          // Supabase is the source of truth for a signed-in user, so we do NOT
+          // fall back to the localStorage profile blob — we show the empty
+          // in-memory record and let a later render reconcile from the cloud.
           if (!cancelled) {
-            setData(loadProfile());
+            setData({ ...EMPTY_PROFILE });
             setAvatarUrl(null);
             setHydrated(true);
           }
@@ -125,14 +127,16 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({
             setAvatarUrl(null);
           }
         } else {
-          // No cloud row yet — seed it from local + onboarding, then adopt it.
-          const local = loadProfile();
+          // No cloud row yet — initialize an EMPTY profile record for this
+          // user id, carrying only the display name / DOB they entered during
+          // onboarding (the app's own first-run capture, not localStorage
+          // profile storage). The localStorage profile blob is intentionally
+          // NOT read for a signed-in user: Supabase is the source of truth.
           const onboarding = loadOnboarding();
           const seeded: ProfileData = {
-            ...local,
-            displayName:
-              local.displayName || onboarding.profile?.displayName || "",
-            dob: local.dob ?? onboarding.dob ?? null,
+            ...EMPTY_PROFILE,
+            displayName: onboarding.profile?.displayName ?? "",
+            dob: onboarding.dob ?? null,
             updatedAt: new Date().toISOString(),
           };
           const savedRow = await upsertProfileRow(

@@ -24,6 +24,7 @@ import {
 
 import { useAnalysisResult } from "@/context/AnalysisResultContext";
 import { useAuth } from "@/context/AuthContext";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import { useImage } from "@/context/ImageContext";
 import { useProfile } from "@/context/ProfileContext";
 import type { AnalysisResult } from "@/context/AnalysisResultContext";
@@ -55,6 +56,14 @@ function formatScanDate(iso: string): string {
 }
 
 export default function ProfilePage() {
+  return (
+    <RequireAuth>
+      <ProfilePageContent />
+    </RequireAuth>
+  );
+}
+
+function ProfilePageContent() {
   const router = useRouter();
   const { result, restoring, setResult } = useAnalysisResult();
   const { status, user, configured, listHistory, signOut } = useAuth();

@@ -6,10 +6,12 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
 import { coerceAnalysisResult } from "@/lib/analysis/schema";
+import { useAuth } from "@/context/AuthContext";
 
 /**
  * Shape of the recommendations block returned by /api/analyze.
@@ -92,7 +94,8 @@ export interface AnalysisResultContextValue {
   result: AnalysisResult | null;
 
   /**
-   * True while the provider is restoring the result from sessionStorage.
+   * True while the provider is restoring the result — from sessionStorage and,
+   * for a signed-in user, from Supabase.
    *
    * Consumers must wait for this to become false before treating
    * result === null as "no analysis exists".
@@ -137,9 +140,18 @@ const AnalysisResultContext = createContext<
 /**
  * Provides application-wide state for the most recent /api/analyze result.
  *
- * The result is kept in React state for normal navigation and mirrored into
- * sessionStorage so it survives provider remounts and page refreshes within
- * the same browser session.
+ * Source of truth by audience:
+ *  - within a browser session (normal navigation + refresh) the result is kept
+ *    in React state and mirrored into sessionStorage, so an in-tab refresh is
+ *    instant and works offline;
+ *  - for a signed-in user the durable record lives in the Supabase `analyses`
+ *    table (written by the results-page save banner). When the in-tab cache is
+ *    empty — a new tab, or after the browser was closed and reopened — the most
+ *    recent saved analysis is restored from Supabase so results are never lost
+ *    by "leaving the website". It is restored already-persisted, so the banner
+ *    never re-saves it (no duplicate rows).
+ *
+ * Anonymous visitors keep the sessionStorage-only behavior exactly as before.
  */
 export const AnalysisResultProvider: React.FC<
   AnalysisResultProviderProps
@@ -160,65 +172,107 @@ export const AnalysisResultProvider: React.FC<
    */
   const [restoring, setRestoring] = useState(true);
 
+  // Accounts feature — lets us restore a signed-in user's latest saved
+  // analysis from Supabase when the in-tab cache is empty.
+  const { configured, status, listHistory } = useAuth();
+
+  // The initial restore runs exactly once; this guards the async cloud path
+  // from re-running when auth state settles.
+  const initializedRef = useRef(false);
+  // Flipped true once a result has been set explicitly in this tab (a fresh
+  // analysis, or a re-open from history), so an in-flight cloud restore can't
+  // clobber a newer result the user just produced.
+  const resultSetLocallyRef = useRef(false);
+
   /**
    * Restore the most recent analysis when the provider mounts.
+   *
+   * Order of preference:
+   *  1. the in-tab sessionStorage cache (freshest — survives a refresh, and the
+   *     only source for anonymous visitors),
+   *  2. for a signed-in user with an empty cache, the latest row in the Supabase
+   *     `analyses` table (survives browser close/reopen and new tabs),
+   *  3. otherwise nothing (anonymous, or no saved analyses yet).
    */
   useEffect(() => {
+    // Wait for the session to finish restoring before choosing a source.
+    if (configured && status === "initializing") return;
+    if (initializedRef.current) return;
+
+    let cancelled = false;
+
+    // 1) In-tab cache.
+    let cachedResult: AnalysisResult | null = null;
+    let cachedPersisted = false;
     try {
-      const storedResult =
-        sessionStorage.getItem(STORAGE_KEY);
-
+      const storedResult = sessionStorage.getItem(STORAGE_KEY);
       if (storedResult) {
-        const parsed = JSON.parse(storedResult);
-
-        const restoredResult =
-          coerceAnalysisResult(parsed);
-
-        /*
-         * coerceAnalysisResult returns:
-         *
-         * {
-         *   ok: true,
-         *   data: AnalysisResult
-         * }
-         *
-         * or:
-         *
-         * {
-         *   ok: false
-         * }
-         *
-         * We must check `ok` before accessing `data`.
-         */
-        if (restoredResult.ok) {
-          setResultState(restoredResult.data);
+        const restored = coerceAnalysisResult(JSON.parse(storedResult));
+        if (restored.ok) {
+          cachedResult = restored.data;
+          cachedPersisted = sessionStorage.getItem(PERSISTED_KEY) === "true";
         } else {
           sessionStorage.removeItem(STORAGE_KEY);
+          sessionStorage.removeItem(PERSISTED_KEY);
         }
-      }
-
-      const storedPersisted =
-        sessionStorage.getItem(PERSISTED_KEY);
-
-      if (storedPersisted === "true") {
-        setPersisted(true);
       }
     } catch (error) {
       console.error(
         "Failed to restore analysis result from sessionStorage:",
         error
       );
-
       try {
         sessionStorage.removeItem(STORAGE_KEY);
         sessionStorage.removeItem(PERSISTED_KEY);
       } catch {
         // Ignore storage cleanup errors.
       }
-    } finally {
-      setRestoring(false);
     }
-  }, []);
+
+    if (cachedResult) {
+      setResultState(cachedResult);
+      setPersisted(cachedPersisted);
+      initializedRef.current = true;
+      setRestoring(false);
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    // 2) Signed-in with an empty cache → restore the latest saved analysis from
+    //    Supabase so results survive a browser close/reopen or a new tab.
+    if (configured && status === "signed-in") {
+      initializedRef.current = true;
+      void (async () => {
+        const history = await listHistory();
+        if (cancelled) return;
+        const latest = history[0];
+        // Don't overwrite a result the user produced while this was in flight.
+        if (latest && !resultSetLocallyRef.current) {
+          setResultState(latest.result);
+          setPersisted(true); // already in the DB — the banner won't re-save it.
+          // Repopulate the in-tab cache so a subsequent refresh is instant.
+          try {
+            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(latest.result));
+            sessionStorage.setItem(PERSISTED_KEY, "true");
+          } catch {
+            // A cache write failure is non-fatal; Supabase stays the source.
+          }
+        }
+        setRestoring(false);
+      })();
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    // 3) Anonymous / not configured / nothing to restore.
+    initializedRef.current = true;
+    setRestoring(false);
+    return () => {
+      cancelled = true;
+    };
+  }, [configured, status, listHistory]);
 
   /**
    * Store a new analysis result.
@@ -228,6 +282,10 @@ export const AnalysisResultProvider: React.FC<
       next: AnalysisResult | null,
       options?: SetResultOptions
     ) => {
+      // A result set explicitly in this tab takes precedence over any pending
+      // cloud restore (see the mount effect's in-flight guard).
+      resultSetLocallyRef.current = next !== null;
+
       setResultState(next);
 
       const nextPersisted = next

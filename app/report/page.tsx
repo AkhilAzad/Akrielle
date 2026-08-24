@@ -8,6 +8,7 @@ import { Container } from "@/components/common/Container";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { FlowHeader } from "@/components/layout/FlowHeader";
 import { PrintableReport } from "@/components/report/PrintableReport";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import { useAnalysisResult } from "@/context/AnalysisResultContext";
 import { buildReportModel } from "@/lib/report/model";
 
@@ -20,6 +21,14 @@ function formatToday(): string {
 }
 
 export default function ReportPage() {
+  return (
+    <RequireAuth>
+      <ReportPageContent />
+    </RequireAuth>
+  );
+}
+
+function ReportPageContent() {
   const { result } = useAnalysisResult();
 
   // Compute the date after mount so server and client markup agree.

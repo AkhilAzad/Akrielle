@@ -12,6 +12,7 @@ import { ScanProgressBar } from "@/components/analysis/ScanProgressBar";
 import { ScanStageList } from "@/components/analysis/ScanStageList";
 import { useScanSequence } from "@/hooks/useScanSequence";
 import { useImage } from "@/context/ImageContext";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import { useAnalysisResult } from "@/context/AnalysisResultContext";
 import type { AnalysisResult } from "@/context/AnalysisResultContext";
 import { isPhotoErrorCode } from "@/types/analyze";
@@ -75,6 +76,14 @@ function ScanSequenceView({ onAnimationComplete }: { onAnimationComplete: () => 
 }
 
 export default function AnalysisPage() {
+  return (
+    <RequireAuth>
+      <AnalysisPageContent />
+    </RequireAuth>
+  );
+}
+
+function AnalysisPageContent() {
   const router = useRouter();
   const { image } = useImage();
   const { setResult } = useAnalysisResult();

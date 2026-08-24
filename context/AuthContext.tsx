@@ -257,10 +257,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   );
 
   const signInWithGoogle = useCallback(() => {
-    if (!isSupabaseConfigured() || typeof window === "undefined") return;
-    const redirectTo = `${window.location.origin}/auth/callback`;
-    window.location.assign(oauthAuthorizeUrl("google", redirectTo));
-  }, []);
+  if (!isSupabaseConfigured() || typeof window === "undefined") return;
+
+  const redirectTo =
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    `${window.location.origin}/auth/callback`;
+
+  window.location.assign(oauthAuthorizeUrl("google", redirectTo));
+}, []);
 
   const signOut = useCallback(async () => {
     const current = sessionRef.current;
