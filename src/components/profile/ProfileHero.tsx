@@ -14,7 +14,7 @@ interface ProfileHeroProps {
   displayName: string;
   /** Whether a real analysis exists to show a score/confidence for. */
   hasAnalysis: boolean;
-  /** Latest beauty score, already rounded (0–100). Only shown when hasAnalysis. */
+  /** Latest overall score, already rounded (0–100). Only shown when hasAnalysis. */
   score: number;
   /** AI confidence for the latest scan, already rounded (0–100). */
   confidence: number;
@@ -91,7 +91,7 @@ export function ProfileHero({
           <div className="flex min-w-0 flex-col gap-2">
             <span className="eyebrow eyebrow-on-dark">
               <span className="eyebrow-dot" aria-hidden="true" />
-              Beauty profile
+              Profile
             </span>
             <h1 className="truncate text-2xl font-medium tracking-tightest text-ivory md:text-3xl">
               {displayName}
@@ -109,7 +109,7 @@ export function ProfileHero({
           </div>
         </div>
 
-        {/* Latest beauty score — accent ring, matching the results panel.
+        {/* Latest overall score — accent ring, matching the results panel.
             Falls back to a first-scan CTA when there's no analysis yet. */}
         {hasAnalysis ? (
           <div className="flex shrink-0 items-center gap-6 md:flex-col md:items-end md:gap-4">
@@ -117,7 +117,7 @@ export function ProfileHero({
               <div
                 className="relative flex h-[min(120px,30vw)] w-[min(120px,30vw)] items-center justify-center rounded-full border border-accent/50"
                 role="img"
-                aria-label={`Latest beauty score: ${score} out of 100`}
+                aria-label={`Overall score: ${score} out of 100`}
               >
                 <div
                   className="pointer-events-none absolute inset-0 rounded-full opacity-40 blur-md"
@@ -129,7 +129,7 @@ export function ProfileHero({
                   <span className="text-sm text-ivory-faint">/100</span>
                 </span>
               </div>
-              <span className="eyebrow text-accent-from">Beauty score</span>
+              <span className="eyebrow text-accent-from">Overall score</span>
             </div>
 
             <div className="flex flex-col items-start gap-2 md:items-end">

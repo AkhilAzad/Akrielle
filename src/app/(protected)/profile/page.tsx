@@ -142,7 +142,7 @@ function ProfilePageContent() {
   // Prefer the name saved on the profile; fall back to the account email,
   // then a neutral label for anonymous visitors.
   const profileName = profile.displayName.trim();
-  const displayName = profileName || user?.email || "Your beauty profile";
+  const displayName = profileName || user?.email || "Your profile";
 
   // ---- Loading ------------------------------------------------------------
   if (settling) {
@@ -174,7 +174,7 @@ function ProfilePageContent() {
           >
             <SectionHeading
               eyebrow="Your profile"
-              title="Your beauty profile."
+              title="Your profile."
               description="Your details, preferences, and analysis — all in one place."
             />
             {configured && status === "signed-in" && (

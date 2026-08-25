@@ -131,7 +131,7 @@ export function AnalysisDetails({ latest }: AnalysisDetailsProps) {
         <SectionHeading
           eyebrow="Key readings"
           title="What AXL detected."
-          description="The core of your beauty profile, each with its own confidence level."
+          description="The core of your profile, each with its own confidence level."
         />
         <motion.div
           initial="hidden"

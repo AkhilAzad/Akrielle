@@ -79,7 +79,7 @@ export function PreferencesCard() {
     <ProfileSection
       eyebrow="Preferences"
       title="How you like things."
-      description="Personalize your beauty focus and manage your privacy."
+      description="Personalize your preferences and manage your privacy."
       action={action}
     >
       {/* Beauty & style. */}
