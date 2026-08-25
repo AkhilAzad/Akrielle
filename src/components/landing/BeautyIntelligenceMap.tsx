@@ -9,7 +9,7 @@ import { useMouseParallax } from "@/hooks/useMouseParallax";
  * The Beauty Intelligence Map — AXL's signature visual.
  *
  * An abstracted, calm facial silhouette annotated the way a
- * consultant's notebook would be: thin burnt-orange guide lines, quiet
+ * consultant's notebook would be: thin crimson guide lines, quiet
  * Onest labels, and a slow "reading" sequence rather than any
  * scanning/sci-fi motif. No neon, no grid overlays, no HUD framing.
  */
@@ -49,7 +49,7 @@ export function BeautyIntelligenceMap() {
         >
           <motion.path
             d="M120 10C168 10 198 52 198 108C198 176 162 250 120 250C78 250 42 176 42 108C42 52 72 10 120 10Z"
-            stroke="#111111"
+            stroke="#F4F3F1"
             strokeOpacity={0.55}
             strokeWidth={1.1}
             initial={{ pathLength: 0, opacity: 0 }}
@@ -59,7 +59,7 @@ export function BeautyIntelligenceMap() {
           {/* quiet interior guide lines, evoking a consultant's sketch, not a HUD */}
           <motion.path
             d="M120 108C138 108 152 122 152 140"
-            stroke="#B15F2C"
+            stroke="#DE1F35"
             strokeWidth={1}
             strokeLinecap="round"
             initial={{ pathLength: 0, opacity: 0 }}
@@ -71,7 +71,7 @@ export function BeautyIntelligenceMap() {
             y1="96"
             x2="150"
             y2="96"
-            stroke="#111111"
+            stroke="#F4F3F1"
             strokeOpacity={0.25}
             strokeWidth={1}
             initial={{ pathLength: 0 }}

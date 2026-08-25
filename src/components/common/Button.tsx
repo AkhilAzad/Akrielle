@@ -50,32 +50,32 @@ interface ButtonAsLink
 type ButtonProps = ButtonAsButton | ButtonAsLink;
 
 /*
- * Lumora pill buttons. The variant *names* are unchanged so existing callers
- * keep working; only the look is Lumora now:
- *   primary  → dark (near-black) pill
- *   gold     → accent (burnt-orange) pill
- *   secondary→ hairline outline pill
+ * AXL pill buttons. The variant *names* are unchanged so existing callers
+ * keep working; only the look changed for the Noir Crimson theme:
+ *   primary  → solid red accent pill (the per-screen primary action)
+ *   gold     → solid red accent pill + red glow (marquee/hero CTAs)
+ *   secondary→ hairline outline pill (quiet, on the black canvas)
  *   outlineLight → translucent light pill (for dark/photo surfaces)
  *   ghost    → inline text link (no pill)
  * With `showArrow`, non-ghost variants grow a circular badge on the right
- * that nudges on hover — Lumora's signature `.with-arrow` treatment.
+ * that nudges on hover — the signature `.with-arrow` treatment.
  */
 const base =
   "group relative inline-flex items-center justify-center font-body font-medium leading-none rounded-pill " +
   "transition-all duration-500 ease-signature focus-visible:outline-none disabled:opacity-50 disabled:pointer-events-none";
 
 const variants: Record<Exclude<ButtonVariant, "ghost">, string> = {
-  primary: "bg-charcoal text-ivory hover:bg-black",
-  gold: "bg-accent text-white hover:bg-accent-to",
+  primary: "bg-accent text-white hover:bg-accent-to",
+  gold: "bg-accent text-white shadow-gold-glow hover:bg-accent-to",
   secondary: "border border-line bg-transparent text-ink hover:border-ink",
   outlineLight:
-    "border border-white/30 bg-white/10 text-ink backdrop-blur-sm hover:bg-white/20",
+    "border border-white/30 bg-white/10 text-ivory backdrop-blur-sm hover:bg-white/20",
 };
 
 const badgeVariants: Record<Exclude<ButtonVariant, "ghost">, string> = {
-  primary: "bg-white/12 text-ivory",
+  primary: "bg-white/20 text-white",
   gold: "bg-white/20 text-white",
-  secondary: "bg-charcoal text-ivory",
+  secondary: "bg-white/10 text-ivory",
   outlineLight: "bg-charcoal text-ivory",
 };
 

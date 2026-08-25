@@ -8,6 +8,7 @@ import { NAV_LINKS, PRIMARY_CTA_LABEL, SITE } from "@/config/site";
 import { Container } from "@/components/common/Container";
 import { Button } from "@/components/common/Button";
 import { NavMenu } from "@/components/layout/NavMenu";
+import { MusicToggle } from "@/components/layout/MusicToggle";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/utils/utils";
 
@@ -154,6 +155,7 @@ export function Navbar() {
 
           {/* Zone 3 — primary CTA + single account element (desktop); menu (mobile) */}
           <div className="flex items-center gap-3 lg:justify-self-end">
+            <MusicToggle />
             <Button
               href="/onboarding"
               size="md"

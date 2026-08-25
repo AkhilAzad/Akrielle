@@ -52,11 +52,11 @@ export function BeautyScoreCard({ data }: BeautyScoreCardProps) {
         tiltRef.current = node;
       }}
       style={shouldReduceMotion ? undefined : { rotateX, rotateY, transformPerspective: 1200 }}
-      className="relative overflow-hidden rounded-card bg-charcoal px-8 py-12 text-ivory shadow-card md:px-14 md:py-16"
+      className="relative overflow-hidden rounded-card border border-line bg-charcoal px-8 py-12 text-ivory shadow-card md:px-14 md:py-16"
     >
       <div
         className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/3 rounded-full opacity-[0.22] blur-3xl"
-        style={{ background: "radial-gradient(circle, #B15F2C 0%, transparent 70%)" }}
+        style={{ background: "radial-gradient(circle, #DE1F35 0%, transparent 70%)" }}
         aria-hidden="true"
       />
 
@@ -114,7 +114,7 @@ export function BeautyScoreCard({ data }: BeautyScoreCardProps) {
               cy="64"
               r={RADIUS}
               fill="none"
-              stroke="#CF8047"
+              stroke="#DE1F35"
               strokeWidth="4"
               strokeLinecap="round"
               strokeDasharray={CIRCUMFERENCE}

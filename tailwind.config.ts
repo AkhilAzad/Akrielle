@@ -1,26 +1,31 @@
 import type { Config } from "tailwindcss";
 
 /**
- * AXL Design Tokens — Lumora visual system
+ * AXL Design Tokens — Noir Crimson visual system
  * ------------------------------------------------------------------
- * Re-skinned to match the original Lumora studio design. The palette
- * is a warm off-white canvas, near-black ink, and a single burnt-
- * orange accent used sparingly. A dark register (charcoal / onyx)
- * powers the cinematic moments: hero watermark, work cards, the
- * stats panel, the nav overlay, and the footer.
+ * A pure-black, premium, minimal AI beauty-tech identity. The canvas
+ * is true black (#000000); surfaces are near-black (#050505 / #0A0A0A)
+ * separated by hairline white-8% borders. Text is warm white. The
+ * single brand hue is RED — a vivid, sophisticated crimson for
+ * interactive elements (buttons, active states, highlights, data
+ * strokes) and a deep blood-crimson for secondary tones, severity,
+ * and ambient depth. There is NO orange / copper / amber / gold in
+ * the palette.
  *
  * IMPORTANT: the token *names* below are kept stable on purpose — the
- * whole app references `paper` / `ink` / `line` / `gold` etc. Only the
- * *values* were remapped to Lumora, so the entire UI adopts Lumora's
- * colours without every file being rewritten. Structural Lumora
- * details (pills, dark cards, liquid hero, loader) are layered on top
- * component-by-component.
+ * whole app references `paper` / `ink` / `line` / `gold` / `accent`
+ * etc. Only the *values* are remapped, so the entire UI adopts the
+ * dark theme without every file being rewritten. The legacy `gold`
+ * key is intentionally remapped to the red accent so any lingering
+ * `text-gold-*` / `bg-gold` / `shadow-gold-glow` usage becomes red
+ * (never copper) for free.
  *
- * Lumora reference values:
- *   --background #ffffff  --foreground #111111  --ink #0a0a0a
- *   --muted #8d8d8d  --subtle #b6b6b6  --line #e6e5e2
- *   --surface #f1f0ee --surface-2 #e3e2df
- *   --accent #b15f2c  --accent-from #cf8047  --accent-to #97501f
+ * Reference values:
+ *   --background #000000  --foreground #F5F3F0  --ink #F5F3F0
+ *   --muted #9A928B  --subtle #6B6560  --line rgba(255,255,255,0.08)
+ *   --surface #050505 --surface-2 #0A0A0A
+ *   --accent #DE1F35  --accent-from #F24858  --accent-to #B0182A
+ *   crimson: deep #5E0D16 / mid #8E1420 / bright #B31E2C
  */
 const config: Config = {
   darkMode: "class",
@@ -30,56 +35,69 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        /* Page canvas + light surfaces (Lumora --background / --surface). */
-        paper: "#FFFFFF",
+        /* Page canvas is TRUE black; surfaces are the near-black
+           elevated layers (brief: #050505 / #0A0A0A). */
+        paper: "#000000",
         surface: {
-          DEFAULT: "#F1F0EE",
-          2: "#E3E2DF",
+          DEFAULT: "#050505",
+          2: "#0A0A0A",
         },
-        /* Ink + its tints (Lumora --foreground / --muted / --subtle). */
+        /* Text: warm white primary, muted warm-grey secondary, faint
+           for small labels. (Formerly the near-black `ink` scale —
+           inverted so the 231 `text-ink*` usages read on black.) */
         ink: {
-          DEFAULT: "#111111",
-          muted: "#8D8D8D",
-          faint: "#B6B6B6",
+          DEFAULT: "#F5F3F0",
+          muted: "#9A928B",
+          faint: "#6B6560",
         },
-        /* The single accent. Kept under the `gold` key so existing
-           `text-gold-deep` / `bg-gold` usages become burnt-orange for
-           free. `accent` is the canonical name for new components. */
+        /* Primary brand accent — a vivid, sophisticated RED. Kept under
+           the `gold` key too so existing `text-gold-deep` / `bg-gold`
+           usages become red (NOT copper). `accent` is canonical. */
         gold: {
-          DEFAULT: "#B15F2C",
-          soft: "#CF8047",
-          deep: "#97501F",
-          bright: "#CF8047",
+          DEFAULT: "#DE1F35",
+          soft: "#F24858",
+          deep: "#B0182A",
+          bright: "#F24858",
         },
         accent: {
-          DEFAULT: "#B15F2C",
-          from: "#CF8047",
-          to: "#97501F",
+          DEFAULT: "#DE1F35",
+          from: "#F24858",
+          to: "#B0182A",
         },
-        /* Neutralised (Lumora has no pink) — mapped to warm greys so any
-           lingering blush usage reads as a quiet surface, not pink. */
+        /* Secondary — deep blood crimson. Used for data viz, severity,
+           ambient depth glows, and quiet accents. */
+        crimson: {
+          DEFAULT: "#8E1420",
+          deep: "#5E0D16",
+          bright: "#B31E2C",
+          soft: "#3A0910",
+        },
+        /* Neutralised (no pink) — mapped to near-black surfaces so any
+           lingering blush usage reads as a quiet dark surface. */
         blush: {
-          DEFAULT: "#E3E2DF",
-          soft: "#F1F0EE",
+          DEFAULT: "#0A0A0A",
+          soft: "#050505",
         },
         success: "#5F8D6B",
-        line: "#E6E5E2",
+        line: "rgba(255,255,255,0.08)",
 
-        /* Dark register — the near-black used for hero watermark, work
-           cards, stats panel, nav overlay and footer. */
-        charcoal: "#0A0A0A",
-        void: "#0A0A0A",
-        onyx: "#151515",
+        /* Dark register — elevated near-black surfaces (premium cards,
+           nav overlay, footer, loader). Sit just above the #000 canvas
+           and are separated from it by hairline borders. */
+        charcoal: "#080808",
+        void: "#050505",
+        onyx: "#121212",
         ivory: {
           DEFAULT: "#F4F3F1",
           muted: "#A8A8A8",
           faint: "#6F6F6F",
         },
 
-        /* Hero gradient stops (Lumora --hero-from / --hero-to). */
+        /* Hero gradient stops — near-black with the faintest crimson
+           warmth for atmosphere (was light grey). */
         hero: {
-          from: "#ECEBE9",
-          to: "#C9C9C9",
+          from: "#0A0406",
+          to: "#000000",
         },
       },
       fontFamily: {
@@ -109,10 +127,12 @@ const config: Config = {
         watermark: "13rem",
       },
       boxShadow: {
-        subtle: "0 1px 2px rgba(10,10,10,0.04), 0 8px 24px rgba(10,10,10,0.05)",
-        lift: "0 24px 60px -24px rgba(10,10,10,0.28)",
-        card: "0 20px 50px -28px rgba(10,10,10,0.35)",
-        "gold-glow": "0 0 1px rgba(207,128,71,0.4), 0 0 48px -8px rgba(177,95,44,0.35)",
+        subtle: "0 1px 2px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.45)",
+        lift: "0 24px 60px -24px rgba(0,0,0,0.75)",
+        card: "0 24px 60px -28px rgba(0,0,0,0.8)",
+        /* Legacy `gold-glow` key remapped to a RED glow. */
+        "gold-glow": "0 0 1px rgba(242,72,88,0.5), 0 0 48px -8px rgba(222,31,53,0.4)",
+        "crimson-glow": "0 0 1px rgba(179,30,44,0.5), 0 0 60px -10px rgba(94,13,22,0.6)",
       },
       transitionTimingFunction: {
         signature: "cubic-bezier(0.22, 1, 0.36, 1)",

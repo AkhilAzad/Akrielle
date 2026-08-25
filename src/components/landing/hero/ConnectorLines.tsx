@@ -26,7 +26,7 @@ const ANCHORS: Record<string, { x: number; y: number }> = {
 };
 
 /**
- * Thin gold threads linking each floating readout back to the point
+ * Thin crimson threads linking each floating readout back to the point
  * on the face it's actually describing — the visual grammar of an
  * annotated diagram, not a HUD. Each line draws itself in exactly
  * when its chip arrives, then carries a single faint highlight that
@@ -53,7 +53,7 @@ export function ConnectorLines({ landmarks }: ConnectorLinesProps) {
           <g key={landmark.id}>
             <motion.path
               d={d}
-              stroke="#B15F2C"
+              stroke="#DE1F35"
               strokeWidth={0.18}
               strokeOpacity={0.35}
               initial={{ pathLength: 0, opacity: 0 }}
@@ -66,7 +66,7 @@ export function ConnectorLines({ landmarks }: ConnectorLinesProps) {
               cx={anchor.x}
               cy={anchor.y}
               r={0.45}
-              fill="#B15F2C"
+              fill="#DE1F35"
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 0.85, scale: 1 }}
               transition={{ duration: 0.4, delay: landmark.delay, ease: easeSignature }}
@@ -77,7 +77,7 @@ export function ConnectorLines({ landmarks }: ConnectorLinesProps) {
             {!shouldReduceMotion && (
               <motion.path
                 d={d}
-                stroke="#CF8047"
+                stroke="#F24858"
                 strokeWidth={0.3}
                 strokeLinecap="round"
                 strokeDasharray={`${Math.max(length * 0.14, 2)} ${length}`}

@@ -55,10 +55,10 @@ export function ProfileHero({
       transition={{ duration: 0.7, ease: easeSignature }}
       className="relative overflow-hidden rounded-card bg-charcoal px-7 py-10 text-ivory shadow-card sm:px-10 md:px-14 md:py-14"
     >
-      {/* Soft burnt-orange bloom, mirrored from the results stats panel. */}
+      {/* Soft crimson bloom, mirrored from the results stats panel. */}
       <div
         className="pointer-events-none absolute right-0 top-0 h-[420px] w-[420px] translate-x-1/3 -translate-y-1/3 rounded-full opacity-[0.22] blur-3xl"
-        style={{ background: "radial-gradient(circle, #B15F2C 0%, transparent 70%)" }}
+        style={{ background: "radial-gradient(circle, #DE1F35 0%, transparent 70%)" }}
         aria-hidden="true"
       />
 
@@ -121,7 +121,7 @@ export function ProfileHero({
               >
                 <div
                   className="pointer-events-none absolute inset-0 rounded-full opacity-40 blur-md"
-                  style={{ background: "radial-gradient(circle, #B15F2C 0%, transparent 72%)" }}
+                  style={{ background: "radial-gradient(circle, #DE1F35 0%, transparent 72%)" }}
                   aria-hidden="true"
                 />
                 <span className="relative flex items-baseline gap-0.5 text-accent-from">

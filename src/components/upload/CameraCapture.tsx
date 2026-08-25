@@ -258,7 +258,7 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
           {status === "error" && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-2.5 p-6 text-center">
               <AlertCircle
-                className="h-6 w-6 text-[#B4483A]"
+                className="h-6 w-6 text-accent-from"
                 strokeWidth={1.6}
                 aria-hidden="true"
               />

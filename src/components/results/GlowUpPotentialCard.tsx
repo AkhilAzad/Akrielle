@@ -62,11 +62,11 @@ export function GlowUpPotentialCard({ data }: GlowUpPotentialCardProps) {
         tiltRef.current = node;
       }}
       style={shouldReduceMotion ? undefined : { rotateX, rotateY, transformPerspective: 1200 }}
-      className="relative overflow-hidden rounded-card bg-charcoal px-8 py-12 text-ivory shadow-card md:px-14 md:py-16"
+      className="relative overflow-hidden rounded-card border border-line bg-charcoal px-8 py-12 text-ivory shadow-card md:px-14 md:py-16"
     >
       <div
         className="pointer-events-none absolute right-0 top-0 h-[420px] w-[420px] translate-x-1/3 -translate-y-1/3 rounded-full opacity-[0.22] blur-3xl"
-        style={{ background: "radial-gradient(circle, #B15F2C 0%, transparent 70%)" }}
+        style={{ background: "radial-gradient(circle, #DE1F35 0%, transparent 70%)" }}
         aria-hidden="true"
       />
 
@@ -117,7 +117,7 @@ export function GlowUpPotentialCard({ data }: GlowUpPotentialCardProps) {
             >
               <div
                 className="pointer-events-none absolute inset-0 rounded-full opacity-40 blur-md"
-                style={{ background: "radial-gradient(circle, #B15F2C 0%, transparent 72%)" }}
+                style={{ background: "radial-gradient(circle, #DE1F35 0%, transparent 72%)" }}
                 aria-hidden="true"
               />
               <motion.span className="relative text-4xl font-medium tracking-tightest text-accent-from">

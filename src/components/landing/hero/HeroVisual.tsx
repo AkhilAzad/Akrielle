@@ -46,7 +46,7 @@ export function HeroVisual() {
           cutout. Purely ambient; sits behind everything. */}
       <div
         className="pointer-events-none absolute inset-x-[12%] bottom-[6%] h-[14%] rounded-[100%]"
-        style={{ background: "radial-gradient(ellipse, rgba(177,95,44,0.16) 0%, transparent 72%)" }}
+        style={{ background: "radial-gradient(ellipse, rgba(94,13,22,0.4) 0%, transparent 72%)" }}
         aria-hidden="true"
       />
 
@@ -60,7 +60,7 @@ export function HeroVisual() {
         <motion.div
           className="pointer-events-none absolute inset-[18%] rounded-full"
           style={{
-            background: "radial-gradient(circle, rgba(207,128,71,0.22) 0%, transparent 65%)",
+            background: "radial-gradient(circle, rgba(222,31,53,0.2) 0%, transparent 65%)",
           }}
           animate={{ opacity: [0.15, 0.45, 0.15] }}
           transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut" }}

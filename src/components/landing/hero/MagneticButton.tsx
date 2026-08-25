@@ -52,7 +52,7 @@ export function MagneticButton({ children, strength = 14, className }: MagneticB
       {!shouldReduceMotion && (
         <motion.span
           className="pointer-events-none absolute inset-0 -z-10 rounded-full blur-xl"
-          style={{ background: "radial-gradient(circle, rgba(177,95,44,0.5), transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, rgba(222,31,53,0.5), transparent 70%)" }}
           initial={{ opacity: 0 }}
           whileHover={{ opacity: 0.85 }}
           transition={{ duration: 0.4, ease: "easeOut" }}

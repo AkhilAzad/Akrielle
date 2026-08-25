@@ -11,7 +11,7 @@ interface ParticleFieldProps {
 }
 
 /**
- * A quiet field of drifting gold/ivory dust behind the face mesh.
+ * A quiet field of drifting crimson/ember dust behind the face mesh.
  * Two motion layers per particle, kept deliberately separate:
  *  - an outer layer that nudges toward the cursor, scaled by a
  *    per-particle "depth" so smaller motes read as farther away
@@ -70,7 +70,7 @@ function Particle({
         style={{
           width: particle.size,
           height: particle.size,
-          background: index % 3 === 0 ? "#B15F2C" : "#97501F",
+          background: index % 3 === 0 ? "#DE1F35" : "#8E1420",
         }}
         animate={
           reduceMotion

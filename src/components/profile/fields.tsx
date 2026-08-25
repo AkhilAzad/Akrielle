@@ -22,7 +22,7 @@ export const ghostPillClass =
 
 /** Compact filled pill for the primary Save control. */
 export const solidPillClass =
-  "inline-flex items-center gap-2 rounded-full bg-charcoal px-5 py-2.5 text-sm font-medium text-ivory transition-colors duration-300 hover:bg-black focus-visible:outline-none disabled:opacity-50 disabled:pointer-events-none";
+  "inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors duration-300 hover:bg-accent-to focus-visible:outline-none disabled:opacity-50 disabled:pointer-events-none";
 
 /** A labeled, read-only value (view mode). Shows an em dash when unset. */
 export function ReadField({ label, value }: { label: string; value: string }) {

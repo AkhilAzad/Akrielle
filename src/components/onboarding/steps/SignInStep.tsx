@@ -115,7 +115,7 @@ export function SignInStep({
             <button
               type="button"
               onClick={handleGoogle}
-              className="group flex w-full items-center justify-center gap-3 rounded-full border border-ink/20 bg-white px-6 py-3 text-[15px] font-medium text-ink transition-colors duration-300 hover:border-ink/50 focus-visible:outline-none"
+              className="group flex w-full items-center justify-center gap-3 rounded-full border border-white/15 bg-white/[0.06] px-6 py-3 text-[15px] font-medium text-ink transition-colors duration-300 hover:border-white/30 hover:bg-white/[0.1] focus-visible:outline-none"
             >
               <GoogleGlyph />
               Continue with Google

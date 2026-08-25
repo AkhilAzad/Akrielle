@@ -44,7 +44,7 @@ export function AnalysisVisual() {
         <svg viewBox="0 0 240 300" className="h-[58%] w-auto" fill="none" aria-hidden="true">
           <path
             d="M120 10C168 10 198 52 198 108C198 176 162 250 120 250C78 250 42 176 42 108C42 52 72 10 120 10Z"
-            stroke="#111111"
+            stroke="#F4F3F1"
             strokeOpacity={0.45}
             strokeWidth={1.1}
           />
@@ -55,7 +55,7 @@ export function AnalysisVisual() {
             className="absolute inset-x-[20%] h-px"
             style={{
               background:
-                "linear-gradient(90deg, transparent, #B15F2C 50%, transparent)",
+                "linear-gradient(90deg, transparent, #DE1F35 50%, transparent)",
             }}
             initial={{ top: "16%", opacity: 0 }}
             animate={{ top: ["16%", "84%", "16%"], opacity: [0, 1, 0] }}

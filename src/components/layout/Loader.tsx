@@ -80,7 +80,7 @@ export function Loader() {
   return (
     <div
       aria-hidden="true"
-      className="fixed inset-0 z-[100] flex flex-col justify-between bg-[#0a0a0a] px-6 py-8 text-ivory transition-transform duration-[900ms] ease-signature sm:px-10 sm:py-12"
+      className="fixed inset-0 z-[100] flex flex-col justify-between bg-surface-2 px-6 py-8 text-ivory transition-transform duration-[900ms] ease-signature sm:px-10 sm:py-12"
       style={{ transform: phase === "exit" ? "translateY(-100%)" : "none" }}
     >
       <div className="flex items-center justify-between">

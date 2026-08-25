@@ -161,7 +161,7 @@ export function FaceMeshSvg({ x, y }: FaceMeshSvgProps) {
         />
         <motion.path
           d="M92 200C84 222 78 244 82 266C60 280 26 298 14 336L14 342L226 342L226 336C214 298 180 280 158 266C162 244 156 222 148 200C140 214 128 222 120 222C112 222 100 214 92 200Z"
-          stroke="#97501F"
+          stroke="#F4F3F1"
           strokeWidth={1}
           strokeLinejoin="round"
           {...draw(0.3, 0.55)}
@@ -194,7 +194,7 @@ export function FaceMeshSvg({ x, y }: FaceMeshSvgProps) {
         {/* Outline */}
         <motion.path
           d="M120 10C168 10 198 52 198 108C198 176 162 250 120 250C78 250 42 176 42 108C42 52 72 10 120 10Z"
-          stroke="#97501F"
+          stroke="#F4F3F1"
           strokeWidth={1.1}
           {...draw(0.2, 0.85)}
         />
@@ -235,7 +235,7 @@ export function FaceMeshSvg({ x, y }: FaceMeshSvgProps) {
         {/* Brows */}
         <motion.path
           d="M50 82Q66 71 84 80"
-          stroke="#111111"
+          stroke="#F4F3F1"
           strokeOpacity={0.32}
           strokeWidth={0.8}
           strokeLinecap="round"
@@ -243,7 +243,7 @@ export function FaceMeshSvg({ x, y }: FaceMeshSvgProps) {
         />
         <motion.path
           d="M156 80Q174 71 190 82"
-          stroke="#111111"
+          stroke="#F4F3F1"
           strokeOpacity={0.32}
           strokeWidth={0.8}
           strokeLinecap="round"
@@ -254,14 +254,14 @@ export function FaceMeshSvg({ x, y }: FaceMeshSvgProps) {
             expression rather than a stare. */}
         <motion.path
           d="M49 93Q66 84 83 93Q66 100 49 93Z"
-          stroke="#111111"
+          stroke="#F4F3F1"
           strokeOpacity={0.38}
           strokeWidth={0.75}
           {...draw(1.05, 0.55)}
         />
         <motion.path
           d="M157 93Q174 84 191 93Q174 100 157 93Z"
-          stroke="#111111"
+          stroke="#F4F3F1"
           strokeOpacity={0.38}
           strokeWidth={0.75}
           {...draw(1.1, 0.55)}
@@ -270,7 +270,7 @@ export function FaceMeshSvg({ x, y }: FaceMeshSvgProps) {
         {/* Nose — a quiet bridge-to-base line, no harsh detail */}
         <motion.path
           d="M112 148Q120 155 128 148"
-          stroke="#111111"
+          stroke="#F4F3F1"
           strokeOpacity={0.28}
           strokeWidth={0.7}
           strokeLinecap="round"
@@ -280,7 +280,7 @@ export function FaceMeshSvg({ x, y }: FaceMeshSvgProps) {
         {/* Lips — two shallow curves, an elegant, closed rest */}
         <motion.path
           d="M96 191Q120 183 144 191"
-          stroke="#111111"
+          stroke="#F4F3F1"
           strokeOpacity={0.3}
           strokeWidth={0.75}
           strokeLinecap="round"
@@ -288,7 +288,7 @@ export function FaceMeshSvg({ x, y }: FaceMeshSvgProps) {
         />
         <motion.path
           d="M99 193Q120 202 141 193"
-          stroke="#111111"
+          stroke="#F4F3F1"
           strokeOpacity={0.3}
           strokeWidth={0.75}
           strokeLinecap="round"
@@ -308,7 +308,7 @@ export function FaceMeshSvg({ x, y }: FaceMeshSvgProps) {
               y1={a.y}
               x2={b.x}
               y2={b.y}
-              stroke="#B15F2C"
+              stroke="#B31E2C"
               strokeWidth={0.35}
               strokeOpacity={0.3}
             />
@@ -319,7 +319,7 @@ export function FaceMeshSvg({ x, y }: FaceMeshSvgProps) {
               cx={p.x}
               cy={p.y}
               r={0.85}
-              fill="#B15F2C"
+              fill="#B31E2C"
               fillOpacity={0.55}
             />
           ))}
@@ -331,7 +331,7 @@ export function FaceMeshSvg({ x, y }: FaceMeshSvgProps) {
           <motion.path
             key={`base-${d}`}
             d={d}
-            stroke="#B15F2C"
+            stroke="#DE1F35"
             strokeWidth={0.9}
             {...draw(0.7 + i * 0.15, 0.55)}
           />
@@ -345,7 +345,7 @@ export function FaceMeshSvg({ x, y }: FaceMeshSvgProps) {
             <motion.path
               key={`shimmer-${d}`}
               d={d}
-              stroke="#CF8047"
+              stroke="#F24858"
               strokeWidth={1}
               strokeLinecap="round"
               strokeDasharray="10 120"
@@ -374,7 +374,7 @@ export function FaceMeshSvg({ x, y }: FaceMeshSvgProps) {
             <motion.circle
               cx={cx}
               cy={cy}
-              fill="#B15F2C"
+              fill="#DE1F35"
               animate={
                 shouldReduceMotion
                   ? { r: 2.2, opacity: 0.9 }

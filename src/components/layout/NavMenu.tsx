@@ -67,7 +67,7 @@ export function NavMenu({ open, onClose }: NavMenuProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4, ease: easeSignature }}
-          className="fixed inset-0 z-[80] flex flex-col bg-[#0a0a0a] text-ivory"
+          className="fixed inset-0 z-[80] flex flex-col bg-surface-2 text-ivory"
           role="dialog"
           aria-modal="true"
           aria-label="Navigation"

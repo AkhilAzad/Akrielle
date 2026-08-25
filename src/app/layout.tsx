@@ -7,6 +7,7 @@ import { ImageProvider } from "@/contexts/ImageContext";
 import { AnalysisResultProvider } from "@/contexts/AnalysisResultContext";
 import { ProfileProvider } from "@/contexts/ProfileContext";
 import { PortfolioProvider } from "@/contexts/PortfolioContext";
+import { MusicProvider } from "@/contexts/MusicContext";
 import { PageTransition } from "@/components/animations/PageTransition";
 import { Loader } from "@/components/layout/Loader";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
@@ -52,19 +53,21 @@ export default function RootLayout({
         <SmoothScroll />
         <RevealObserver />
         <Loader />
-        <AuthProvider>
-          <OnboardingProvider>
-            <ImageProvider>
-              <AnalysisResultProvider>
-                <ProfileProvider>
-                  <PortfolioProvider>
-                    <PageTransition>{children}</PageTransition>
-                  </PortfolioProvider>
-                </ProfileProvider>
-              </AnalysisResultProvider>
-            </ImageProvider>
-          </OnboardingProvider>
-        </AuthProvider>
+        <MusicProvider>
+          <AuthProvider>
+            <OnboardingProvider>
+              <ImageProvider>
+                <AnalysisResultProvider>
+                  <ProfileProvider>
+                    <PortfolioProvider>
+                      <PageTransition>{children}</PageTransition>
+                    </PortfolioProvider>
+                  </ProfileProvider>
+                </AnalysisResultProvider>
+              </ImageProvider>
+            </OnboardingProvider>
+          </AuthProvider>
+        </MusicProvider>
       </body>
     </html>
   );

@@ -214,7 +214,7 @@ function UploadErrorMessage({ error }: { error: UploadError | null }) {
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.3 }}
           role="alert"
-          className="flex items-center justify-center gap-2 text-sm text-[#B4483A]"
+          className="flex items-center justify-center gap-2 text-sm text-accent-from"
         >
           <AlertCircle className="h-4 w-4 shrink-0" strokeWidth={1.6} aria-hidden="true" />
           {error.message}

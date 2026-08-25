@@ -5,7 +5,7 @@ import type { ReportModel } from "@/lib/report/model";
  * designed to be saved as a PDF via the browser's native print dialog.
  * Uses AXL's Lumora palette and type system directly, so the exported
  * PDF carries the same editorial character as the site — a light paper
- * canvas, ink text, and a single burnt-orange accent used sparingly. It is
+ * canvas, ink text, and a single crimson accent used sparingly. It is
  * set entirely in Onest: headings read as tight-tracked weights, and the
  * small uppercase instrument labels stand in for Lumora's eyebrow style.
  *

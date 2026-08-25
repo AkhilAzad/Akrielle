@@ -86,7 +86,7 @@ function HeroMetricCard() {
 
 /**
  * The hero, re-skinned to Lumora: a giant wordmark watermark, a masked
- * line-by-line headline, a burnt-orange primary CTA, and the liquid cursor-
+ * line-by-line headline, a crimson primary CTA, and the liquid cursor-
  * reveal visual with a live-analysis card and capability chips. Entrance is
  * gated on the loader's intro event (see RevealObserver) via `data-intro`.
  */
