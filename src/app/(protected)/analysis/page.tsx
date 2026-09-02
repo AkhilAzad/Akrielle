@@ -28,6 +28,81 @@ const stages = [...SCAN_STAGES];
 
 type ApiStatus = "loading" | "success" | "error";
 
+type AnalyzeResponse =
+  | { ok: true; data: AnalysisResult }
+  | { ok: false; body: AnalyzeErrorBody };
+
+/*
+ * Request coalescing for the analysis POST.
+ *
+ * /api/analyze is expensive and NON-idempotent — each request is one real
+ * (paid) OpenRouter analysis. The page triggers it from a mount effect, but a
+ * single user action can mount/run that effect several times: React StrictMode
+ * double-invokes effects in dev, and the page genuinely remounts (the
+ * RequireAuth gate swaps its loader for the page once the session restores, and
+ * the route-transition wrapper remounts the subtree). Tying the request to the
+ * component lifecycle therefore fired it up to 4×.
+ *
+ * We instead key ONE in-flight request per (image, attempt) at module scope, so
+ * every mount/invocation for the same user action shares the same promise and
+ * its result — exactly one network call. A new photo (new File) or a retry
+ * (incremented attempt) is a new key and correctly gets its own call. This is
+ * request de-duplication, not a debounce/timeout: no timers, no arbitrary delay.
+ */
+const analysisRequests = new WeakMap<File, Map<number, Promise<AnalyzeResponse>>>();
+
+function requestAnalysisOnce(
+  image: File,
+  attempt: number
+): Promise<AnalyzeResponse> {
+  let byAttempt = analysisRequests.get(image);
+  if (!byAttempt) {
+    byAttempt = new Map();
+    analysisRequests.set(image, byAttempt);
+  }
+
+  const existing = byAttempt.get(attempt);
+  if (existing) return existing;
+
+  const promise = (async (): Promise<AnalyzeResponse> => {
+    const formData = new FormData();
+    formData.append("image", image);
+
+    const response = await fetch("/api/analyze", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      // Prefer the structured error the API returns so we can show a specific
+      // message and decide whether retrying will help.
+      let body: AnalyzeErrorBody | null = null;
+      try {
+        body = (await response.json()) as AnalyzeErrorBody;
+      } catch {
+        body = null;
+      }
+
+      return {
+        ok: false,
+        body: body?.code
+          ? body
+          : {
+              code: "analysis-failed",
+              error:
+                "Something went wrong while reading your photo. Please try again.",
+            },
+      };
+    }
+
+    const data = (await response.json()) as AnalysisResult;
+    return { ok: true, data };
+  })();
+
+  byAttempt.set(attempt, promise);
+  return promise;
+}
+
 function ScanSequenceView({ onAnimationComplete }: { onAnimationComplete: () => void }) {
   const { completedCount, progress } = useScanSequence({
     stageCount: stages.length,
@@ -105,54 +180,29 @@ function AnalysisPageContent() {
   useEffect(() => {
     if (!image) return;
 
-    let cancelled = false;
+    // `active` only guards state updates against a torn-down instance. The
+    // actual request is de-duplicated in requestAnalysisOnce, so remounts and
+    // StrictMode's double-invoke reuse the same in-flight call rather than
+    // firing new ones — one user action makes exactly one /api/analyze request.
+    let active = true;
     setApiStatus("loading");
     setErrorInfo(null);
     resultRef.current = null;
 
-    const runAnalysis = async () => {
-      try {
-        const formData = new FormData();
-        formData.append("image", image);
+    requestAnalysisOnce(image, attempt)
+      .then((result) => {
+        if (!active) return;
 
-        const response = await fetch("/api/analyze", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!response.ok) {
-          // Prefer the structured error the API returns so we can show a
-          // specific message and decide whether retrying will help.
-          let body: AnalyzeErrorBody | null = null;
-          try {
-            body = (await response.json()) as AnalyzeErrorBody;
-          } catch {
-            body = null;
-          }
-
-          if (cancelled) return;
-
-          setErrorInfo(
-            body?.code
-              ? body
-              : {
-                  code: "analysis-failed",
-                  error:
-                    "Something went wrong while reading your photo. Please try again.",
-                }
-          );
+        if (result.ok) {
+          resultRef.current = result.data;
+          setApiStatus("success");
+        } else {
+          setErrorInfo(result.body);
           setApiStatus("error");
-          return;
         }
-
-        const data = await response.json();
-
-        if (cancelled) return;
-
-        resultRef.current = data as AnalysisResult;
-        setApiStatus("success");
-      } catch (error) {
-        if (cancelled) return;
+      })
+      .catch((error) => {
+        if (!active) return;
         console.error(error);
         setErrorInfo({
           code: "analysis-failed",
@@ -160,13 +210,10 @@ function AnalysisPageContent() {
             "We couldn't reach the analysis service. Please check your connection and try again.",
         });
         setApiStatus("error");
-      }
-    };
-
-    runAnalysis();
+      });
 
     return () => {
-      cancelled = true;
+      active = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [image, attempt]);

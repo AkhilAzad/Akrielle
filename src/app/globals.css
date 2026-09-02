@@ -189,6 +189,29 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.06),
       0 24px 60px -28px rgba(0, 0, 0, 0.8);
   }
+
+  /* --- Hero portrait (edge-feathered, borderless) ------------------------
+     The landing portrait sits directly on the black hero canvas — no panel,
+     no border. A soft radial mask feathers every edge to transparent so the
+     image melts into the section, while the face (upper-centre) stays fully
+     opaque and crisp. The background is forced transparent so the crimson
+     ambient bloom layered behind it reads through the feathered edges (which
+     also lets the image's own red rim light bleed into a subtle halo). */
+  .hero-portrait {
+    background: transparent !important;
+    -webkit-mask-image: radial-gradient(
+      130% 122% at 52% 40%,
+      #000 58%,
+      rgba(0, 0, 0, 0.4) 80%,
+      transparent 100%
+    );
+    mask-image: radial-gradient(
+      130% 122% at 52% 40%,
+      #000 58%,
+      rgba(0, 0, 0, 0.4) 80%,
+      transparent 100%
+    );
+  }
 }
 
 /* ==========================================================================

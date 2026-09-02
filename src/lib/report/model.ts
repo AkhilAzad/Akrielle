@@ -1,4 +1,5 @@
 import type { AnalysisResult } from "@/types/analysis";
+import { buildScoreRationale } from "@/backend/ai/scoring";
 
 /**
  * A plain-data (icon-free, fully serializable) view of an analysis
@@ -54,8 +55,7 @@ export function buildReportModel(result: AnalysisResult): ReportModel {
   return {
     score: Math.round(result.beautyScore),
     confidence,
-    scoreDescription:
-      "Your beauty profile was generated from AI analysis of your uploaded photo.",
+    scoreDescription: buildScoreRationale(result),
     glowUp: {
       current: Math.round(result.glowUp.currentAppearanceScore),
       potential: Math.round(result.glowUp.potentialScore),

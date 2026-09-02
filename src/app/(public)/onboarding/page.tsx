@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { FlowHeader } from "@/components/layout/FlowHeader";
-import { Container } from "@/components/common/Container";
 import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
 import { SignInStep } from "@/components/onboarding/steps/SignInStep";
 import { DobStep } from "@/components/onboarding/steps/DobStep";
@@ -148,7 +147,7 @@ function OnboardingFlow() {
       <FlowHeader backHref="/" />
 
       <main className="py-16 md:py-24">
-        <Container className="flex max-w-[520px] flex-col items-center">
+        <div className="mx-auto flex w-full max-w-[560px] flex-col items-center px-5 sm:px-8">
           {step !== "done" && (
             <motion.div
               initial={{ opacity: 0, y: -8 }}
@@ -205,7 +204,7 @@ function OnboardingFlow() {
               </motion.div>
             </AnimatePresence>
           </div>
-        </Container>
+        </div>
       </main>
     </>
   );

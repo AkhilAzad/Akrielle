@@ -106,13 +106,15 @@ export function Hero() {
       ref={ref}
       className="relative isolate overflow-hidden bg-paper pt-36 pb-20 md:pt-44 md:pb-28"
     >
-      {/* Soft neutral vignette (Lumora hero lighting, no colour cast). */}
+      {/* Ambient hero lighting — deep black canvas with a subtle blood-
+          crimson glow (top-right, behind the portrait, and lower-left) to
+          match the Noir Crimson theme. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(90% 70% at 82% 0%, rgba(201,201,201,0.35) 0%, transparent 55%), radial-gradient(70% 60% at 5% 100%, rgba(227,226,223,0.5) 0%, transparent 60%)",
+            "radial-gradient(90% 70% at 82% 0%, rgba(142,20,32,0.20) 0%, transparent 55%), radial-gradient(70% 60% at 5% 100%, rgba(94,13,22,0.22) 0%, transparent 60%)",
         }}
       />
       <div
@@ -196,8 +198,20 @@ export function Hero() {
               style={reduce ? undefined : { y: visualY, scale: visualScale }}
               className="relative"
             >
+              {/* Crimson ambient bloom behind the portrait — a soft blood-red
+                  halo so the edge-feathered cutout melts into the black hero
+                  (and its red rim light bleeds outward) instead of sitting on
+                  a hard bordered panel. Painted first so it stays behind. */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -inset-6"
+                style={{
+                  background:
+                    "radial-gradient(56% 52% at 52% 40%, rgba(142,20,32,0.42) 0%, rgba(94,13,22,0.16) 46%, transparent 74%)",
+                }}
+              />
               <LiquidReveal
-                className="aspect-[4/5] w-full rounded-card border border-line"
+                className="hero-portrait aspect-[4/5] w-full"
                 alt="Facial analysis preview"
                 baseSrc="/assets/hero/hero-portrait.png"
                 revealSrc="/assets/hero/hero-portrait.png"

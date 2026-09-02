@@ -1,7 +1,16 @@
 import type {
   AnalysisResult,
+  FacialAnalysisFeature,
+  ImpactImprovement,
   ImprovementPriority,
 } from "@/types/analysis";
+
+import {
+  deriveOverallConfidence,
+  firstScore,
+  normalizeFeatureConfidence,
+  reconcileGlowUp,
+} from "./scoring";
 
 
 export function isRecord(
@@ -66,7 +75,7 @@ export function extractJsonObject(
 
 function str(
   value: unknown,
-  fallback = "Unavailable"
+  fallback = "Unknown"
 ): string {
 
   if (
@@ -155,38 +164,128 @@ function repairAnalysisResult(
       : {};
 
 
-  const recommendations =
-    Array.isArray(parsed.recommendations)
+  const glow =
+    isRecord(parsed.glowUp)
+      ? parsed.glowUp
+      : {};
+
+
+  const recs =
+    isRecord(parsed.recommendations)
       ? parsed.recommendations
+      : {};
+
+
+
+  /*
+   * Feature-specific confidence: keep each reading's own confidence, but an
+   * undetermined ("Unknown") reading can't claim high certainty.
+   */
+  const facialAnalysis: FacialAnalysisFeature[] =
+    Array.isArray(parsed.facialAnalysis)
+      ? parsed.facialAnalysis
+          .filter(isRecord)
+          .map((item) => {
+            const status = str(item.status);
+
+            return {
+              feature:
+                str(item.feature, "Feature"),
+
+              confidence:
+                normalizeFeatureConfidence(
+                  status,
+                  clampScore(item.confidence)
+                ),
+
+              status,
+
+              explanation:
+                str(item.explanation),
+            };
+          })
       : [];
 
 
 
-  const recommendationText =
-    recommendations
-      .map((item) =>
-        typeof item === "string"
-          ? item
-          : JSON.stringify(item)
-      )
-      .join(", ");
+  const impactImprovements: ImpactImprovement[] =
+    Array.isArray(parsed.impactImprovements)
+      ? parsed.impactImprovements
+          .filter(isRecord)
+          .map((item) => ({
+            area:
+              str(item.area, "Improvement"),
+
+            priority:
+              priority(item.priority),
+
+            explanation:
+              str(item.explanation),
+
+            expectedImprovement:
+              str(item.expectedImprovement),
+          }))
+      : [];
+
+
+
+  /*
+   * Dynamic Beauty Harmony score: the model's honest per-image number, never a
+   * hardcoded default; cross-filled from the equivalent current-appearance
+   * score only if the model omitted it.
+   */
+  const beautyScore =
+    firstScore(
+      parsed.beautyScore,
+      glow.currentAppearanceScore,
+      parsed.currentScore
+    ) ?? 0;
+
+
+
+  /*
+   * Dynamic Glow-Up score: current cross-fills with the beauty score; potential
+   * is trusted only when present and >= current, otherwise derived from the
+   * improvements actually identified. reconcileGlowUp guarantees
+   * potential >= current.
+   */
+  const currentAppearance =
+    firstScore(
+      glow.currentAppearanceScore,
+      parsed.currentScore,
+      parsed.beautyScore
+    ) ?? 0;
+
+  const glowScores =
+    reconcileGlowUp(
+      currentAppearance,
+      firstScore(
+        glow.potentialScore,
+        parsed.potentialScore
+      ),
+      impactImprovements
+    );
+
+
+
+  /*
+   * Overall confidence is grounded in the per-feature readings when present,
+   * falling back to the model's own top-level number only if none were given.
+   */
+  const confidence =
+    deriveOverallConfidence(
+      facialAnalysis,
+      firstScore(parsed.confidence) ?? 0
+    );
 
 
 
   return {
 
-    beautyScore:
-      clampScore(
-        parsed.beautyScore,
-        80
-      ),
+    beautyScore,
 
 
-    confidence:
-      clampScore(
-        parsed.confidence,
-        90
-      ),
+    confidence,
 
 
 
@@ -201,6 +300,7 @@ function repairAnalysisResult(
     skinTone:
       str(
         parsed.skinTone ??
+        parsed.skinAnalysis ??
         skin.tone ??
         skin.texture
       ),
@@ -216,16 +316,14 @@ function repairAnalysisResult(
 
     eyeShape:
       str(
-        parsed.eyeShape,
-        "Detected from facial analysis"
+        parsed.eyeShape
       ),
 
 
 
     lipShape:
       str(
-        parsed.lipShape,
-        "Detected from facial analysis"
+        parsed.lipShape
       ),
 
 
@@ -233,6 +331,7 @@ function repairAnalysisResult(
     facialHarmony:
       str(
         parsed.facialHarmony ??
+        parsed.facialSymmetry ??
         parsed.symmetry
       ),
 
@@ -241,39 +340,35 @@ function repairAnalysisResult(
     recommendations: {
 
       foundation:
-        "Recommended based on skin analysis",
+        str(recs.foundation),
 
 
       lipstick:
-        "Recommended based on undertone",
+        str(recs.lipstick),
 
 
       blush:
-        "Recommended based on facial harmony",
+        str(recs.blush),
 
 
       eyeshadow:
-        "Recommended based on eye contrast",
+        str(recs.eyeshadow),
 
 
       highlighter:
-        "Recommended based on facial structure",
+        str(recs.highlighter),
 
 
       hairstyle:
-        recommendationText ||
-        "Maintain hairstyle suited to face shape",
+        str(recs.hairstyle),
 
 
       accessories:
-        "Choose accessories matching facial proportions",
+        str(recs.accessories),
 
 
       skincare:
-        str(
-          skin.concerns,
-          recommendationText
-        ),
+        str(recs.skincare),
 
     },
 
@@ -282,87 +377,29 @@ function repairAnalysisResult(
     glowUp: {
 
       currentAppearanceScore:
-        clampScore(
-          parsed.currentScore,
-          80
-        ),
+        glowScores.currentAppearanceScore,
 
 
       potentialScore:
-        clampScore(
-          parsed.potentialScore,
-          90
-        ),
+        glowScores.potentialScore,
 
 
       reason:
-        "Generated through AI beauty intelligence analysis",
+        str(
+          glow.reason ??
+          parsed.reason,
+          "Based on the improvements identified from your photo."
+        ),
 
     },
 
 
 
-    impactImprovements:
-      Array.isArray(
-        parsed.impactImprovements
-      )
-      ? parsed.impactImprovements
-          .filter(isRecord)
-          .map((item) => ({
-            area:
-              str(
-                item.area,
-                "Improvement"
-              ),
-
-            priority:
-              priority(
-                item.priority
-              ),
-
-            explanation:
-              str(
-                item.explanation
-              ),
-
-            expectedImprovement:
-              str(
-                item.expectedImprovement
-              ),
-          }))
-      : [],
+    impactImprovements,
 
 
 
-    facialAnalysis:
-      Array.isArray(
-        parsed.facialAnalysis
-      )
-      ? parsed.facialAnalysis
-          .filter(isRecord)
-          .map((item) => ({
-            feature:
-              str(
-                item.feature,
-                "Feature"
-              ),
-
-            confidence:
-              clampScore(
-                item.confidence
-              ),
-
-            status:
-              str(
-                item.status
-              ),
-
-            explanation:
-              str(
-                item.explanation
-              ),
-          }))
-      : [],
+    facialAnalysis,
 
   };
 }
@@ -395,7 +432,8 @@ export function coerceAnalysisResult(
   const hasSkin =
     Boolean(
       parsed.skinTone ??
-      parsed.skin_analysis
+      parsed.skin_analysis ??
+      parsed.skinAnalysis
     );
 
 

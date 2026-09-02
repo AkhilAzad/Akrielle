@@ -31,6 +31,7 @@ import { SaveHistoryBanner } from "@/components/account/SaveHistoryBanner";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { useAnalysisResult } from "@/contexts/AnalysisResultContext";
 import { getFacialFeatureIcon, getImpactAreaIcon } from "@/utils/resultIcons";
+import { buildScoreRationale } from "@/backend/ai/scoring";
 
 import type {
   BeautyProfileAttribute,
@@ -137,8 +138,7 @@ function ResultsPageContent() {
   const beautyScore: BeautyScoreData = {
     score: roundedScore,
     headline: "Beauty Harmony Score",
-    description:
-      "Your beauty profile was generated from AI analysis of your uploaded photo.",
+    description: buildScoreRationale(result),
     breakdown: [
       {
         id: "beauty-score",

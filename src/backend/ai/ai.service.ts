@@ -1,3 +1,4 @@
+import { requestAnalysis as requestOpenRouter } from "./providers/openrouter.provider";
 import { requestAnalysis as requestGrok } from "./providers/grok.provider";
 import { requestAnalysis as requestGemini } from "./providers/gemini.provider";
 
@@ -25,14 +26,60 @@ export async function requestAIAnalysis(
 
 
   /*
-   * Primary AI Provider:
+   * Primary AI Gateway:
+   * OpenRouter Vision (model configurable via OPENROUTER_MODEL)
+   */
+
+  try {
+
+    console.log(
+      "Trying OpenRouter AI..."
+    );
+
+
+    const openRouterResult =
+      await requestOpenRouter(
+        base64,
+        mimeType
+      );
+
+
+    if (openRouterResult.ok) {
+
+      return {
+        ok: true,
+        raw: openRouterResult.raw,
+      };
+
+    }
+
+
+    console.warn(
+      "OpenRouter failed:",
+      openRouterResult.message
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "OpenRouter crashed:",
+      error
+    );
+
+  }
+
+
+
+  /*
+   * Fallback AI Provider:
    * Grok Vision
    */
 
   try {
 
     console.log(
-      "Trying Grok AI..."
+      "Switching to Grok AI..."
     );
 
 

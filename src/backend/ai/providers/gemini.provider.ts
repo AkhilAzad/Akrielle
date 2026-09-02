@@ -1,4 +1,6 @@
-const GEMINI_MODEL = "gemini-3.6-flash";
+import { ANALYSIS_PROMPT } from "@/backend/ai/prompt";
+
+const GEMINI_MODEL = "gemini-3.5-flash-lite";
 
 export type GeminiOutcome =
   | {
@@ -11,23 +13,6 @@ export type GeminiOutcome =
       status: number;
       message: string;
     };
-
-
-const ANALYSIS_PROMPT = `
-Analyze this face image for beauty intelligence.
-
-Return ONLY valid JSON.
-
-Include:
-- face shape
-- symmetry
-- skin analysis
-- undertone
-- strengths
-- recommendations
-
-Do not include markdown.
-`;
 
 
 
@@ -84,6 +69,10 @@ export async function requestAnalysis(
             ],
           },
         ],
+
+        generationConfig: {
+          responseMimeType: "application/json",
+        },
 
       }),
     }

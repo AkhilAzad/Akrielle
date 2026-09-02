@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 
 import { FlowHeader } from "@/components/layout/FlowHeader";
-import { Container } from "@/components/common/Container";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { Button } from "@/components/common/Button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -136,7 +135,7 @@ function SignInInner() {
       <FlowHeader backHref="/" />
 
       <main className="py-16 md:py-24">
-        <Container className="flex max-w-[460px] flex-col items-center">
+        <div className="mx-auto flex w-full max-w-[560px] flex-col items-center px-5 sm:px-8">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -269,7 +268,7 @@ function SignInInner() {
               </button>
             </motion.p>
           )}
-        </Container>
+        </div>
       </main>
     </>
   );

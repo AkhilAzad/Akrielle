@@ -1,3 +1,5 @@
+import { ANALYSIS_PROMPT } from "@/backend/ai/prompt";
+
 const GROK_MODEL = "grok-4";
 
 
@@ -12,31 +14,6 @@ export type GrokOutcome =
       status: number;
       message: string;
     };
-
-
-
-const ANALYSIS_PROMPT = `
-Analyze this face image for beauty intelligence.
-
-Return ONLY valid JSON.
-
-The JSON must include:
-
-{
-  "faceShape": "",
-  "facialSymmetry": "",
-  "skinAnalysis": "",
-  "undertone": "",
-  "strengths": [],
-  "improvementRecommendations": [],
-  "hairstyleSuggestions": []
-}
-
-Rules:
-- Do not include markdown.
-- Do not explain your answer.
-- Return only JSON.
-`;
 
 
 
@@ -144,6 +121,11 @@ export async function requestAnalysis(
 
             temperature:
               0.2,
+
+
+            response_format: {
+              type: "json_object",
+            },
 
 
           }),

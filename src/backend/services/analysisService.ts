@@ -5,7 +5,14 @@ import {
   ACCEPTED_FILE_TYPES,
   MAX_FILE_SIZE_BYTES,
   MAX_FILE_SIZE_LABEL,
+  MIN_IMAGE_DIMENSION,
 } from "@/constants/upload";
+
+import {
+  applyImageConfidence,
+  imageQualityFactor,
+  readImageDimensions,
+} from "@/backend/ai/scoring";
 
 import type { AnalysisResult } from "@/types/analysis";
 import type { AnalyzeErrorCode } from "@/types/analyze";
@@ -104,14 +111,42 @@ export async function analyzeImage(
 
 
   /*
-   * Convert image to base64
+   * Decode the image bytes once, then run a basic image-quality check
+   * before spending an AI call.
    */
 
   const bytes = await image.arrayBuffer();
 
+  const buffer = Buffer.from(bytes);
+
+
+  const dimensions =
+    readImageDimensions(buffer, image.type);
+
+
+  /*
+   * Reject images too small on the shorter side to support a meaningful
+   * analysis (icons, thumbnails, corrupt files). Only block when the
+   * dimensions parse confidently — otherwise fail open.
+   */
+  if (
+    dimensions &&
+    Math.min(dimensions.width, dimensions.height) < MIN_IMAGE_DIMENSION
+  ) {
+
+    return {
+      ok: false,
+      code: "low-quality",
+      status: 400,
+      message:
+        `That photo is too small for an accurate analysis. Please upload an image at least ${MIN_IMAGE_DIMENSION}px on its shorter side.`,
+    };
+
+  }
+
+
   const base64 =
-    Buffer.from(bytes)
-      .toString("base64");
+    buffer.toString("base64");
 
 
 
@@ -223,15 +258,28 @@ export async function analyzeImage(
 
 
     /*
-     * Success
+     * Success — lower the reported confidence for borderline-resolution
+     * images so a barely-acceptable photo doesn't claim full certainty.
      */
+
+    const qualityFactor =
+      dimensions
+        ? imageQualityFactor(
+            Math.min(dimensions.width, dimensions.height),
+            MIN_IMAGE_DIMENSION
+          )
+        : 1;
+
 
     return {
 
       ok: true,
 
       data:
-        outcome.data,
+        applyImageConfidence(
+          outcome.data,
+          qualityFactor
+        ),
 
     };
 
